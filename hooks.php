@@ -39,5 +39,3 @@
 
 	foreach ($hooks as $hook => $function)
 		$call($hook, $function);
-
-?>
