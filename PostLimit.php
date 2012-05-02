@@ -30,6 +30,66 @@ if (!defined('SMF'))
 
 class PostLimit
 {
+	private $_user;
+	private $_board;
+	private $_tools;
+	private $_params = array();
+	private $_data = array();
+	static private $_dbTableName = 'post_limit';
 
-	function __construct(){}
+	public function __construct($user, $board)
+	{
+		if (empty($user) || empty($board))
+			return false;
+
+		$this->_user = $user;
+		$this->_board = $board;
+		$this->_tools = $this->tools();
+		$this->_db = $this->db(self::$_dbTableName);
+		$this->_params = array(
+			'where' => 'id_user = {int:id_user}'
+		);
+		$this->_data = array(
+			'id_user' => $this->_user
+		);
+	}
+
+	public function updateCount()
+	{
+		/* Update! */
+		$this->_params['set'] = 'post_count=post_count+1';
+		$this->_db->params($this->_params, $this->_data);
+		$this->_db->updateData();
+	}
+
+	public function getCount()
+	{
+		$this->_params['rows'] = 'post_count';
+		$this->_db->params($this->_params, $this->_data);
+
+		return $this->_db->getData(null, true);
+	}
+
+	public function isBoardLimited()
+	{
+
+	}
+
+	public function tools()
+	{
+		global $sourcedir;
+
+		require_once($sourcedir. '/Subs-PostLimit.php');
+
+		return PostLimitTools::getInstance();
+	}
+
+	protected function db($table)
+	{
+		global $sourcedir;
+
+		require_once($sourcedir. '/Subs-PostLimit.php');
+
+		return new PostLimitDB($table);
+	}
 }
