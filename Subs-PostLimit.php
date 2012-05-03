@@ -208,11 +208,7 @@ class PostLimitTools
 			{
 				$km = str_replace('PostLimit_', '', $km);
 
-				/* Hickjack this to convert the string to a timestamp */
-				if ($km == 'admin_limit_timeframe')
-					$vm = strtotime('-1 '.$vm);
-
-				/* Done? then populate the new array */
+				/* Populate the new array */
 				$this->matchesSettings[$km] = $vm;
 			}
 

@@ -33,6 +33,8 @@
 	$hooks = array(
 		'integrate_pre_include' => '$sourcedir/PostLimit.php',
 		'integrate_admin_areas' => 'wrapper_post_limit_admin',
+		'integrate_load_permissions' => 'PostLimit::permissions',
+		'integrate_admin_areas' => 'PostLimit::admin',
 	);
 
 		$call = 'remove_integration_function';
