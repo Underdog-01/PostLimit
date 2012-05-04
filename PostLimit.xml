@@ -4,3 +4,55 @@
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>Suki:PostLimit</id>
 	<version>1.0</version>
+	
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="replace"><![CDATA[// You must be posting to *some* board.
+	if (empty($board) && !$context['make_event'])
+		fatal_lang_error('no_board', false);]]></search>
+			<add><![CDATA[// You must be posting to *some* board.
+	if (empty($board) && !$context['make_event'])
+		fatal_lang_error('no_board', false);
+
+	/* PostLimit mod */
+	$pl_postLimit = new PostLimit($user_info['id'], $board);
+
+	/* Is this board limited? */
+	if ($postLimit->isBoardLimited())
+	{
+		/* Get the user's post limit */
+		$pl_userLimit = $pl_postLimit->getLimit();
+
+		/* Get the user's current post count */
+		$pl_userCount = $pl_postLimit->getCount();
+
+		/* Define what we are gonna do */
+		if ($pl_userCount != 0)
+		{
+			/* Just how many messages are left? */
+			$pl_messagesLeft = $pl_userLimit - $pl_userCount;
+
+			switch ($pl_messagesLeft)
+			{
+				case 1:
+					$context['pl_message'] = PostLimit::tools()->getText('message_1');
+				break;
+				case 2:
+					$context['pl_message'] = PostLimit::tools()->getText('message_2');
+				break;
+				case 3:
+					$context['pl_message'] = PostLimit::tools()->getText('message_3');
+				break;
+			}
+		}
+
+		/* The user doesn't have any messages left */
+		else
+			fatal_error($pl_userLimit->customMessage($user_info['name']), false);
+	}
+
+	/* PostLimit mod */]]></add>
+		</operation>
+	</file>
+
+</modification>

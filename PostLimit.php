@@ -36,9 +36,10 @@ class PostLimit
 {
 	private $_user;
 	private $_board;
-	private $_tools;
+	public static $tools;
 	private $_params = array();
 	private $_data = array();
+	private $_rows = array();
 	static private $_dbTableName = 'post_limit';
 
 	public function __construct($user, $board)
@@ -48,7 +49,6 @@ class PostLimit
 
 		$this->_user = $user;
 		$this->_board = $board;
-		$this->_tools = $this->tools();
 		$this->_db = $this->db(self::$_dbTableName);
 		$this->_params = array(
 			'where' => 'id_user = {int:id_user}'
@@ -56,30 +56,48 @@ class PostLimit
 		$this->_data = array(
 			'id_user' => $this->_user
 		);
+		$this->_rows = array(
+			'post_count' => 'post_count',
+			'post_limit' => 'post_limit',
+			'id_boards' => 'id_boards'
+		);
 	}
 
 	public function updateCount()
 	{
 		/* Update! */
-		$this->_params['set'] = 'post_count=post_count+1';
+		$this->_params['set'] = 'post_count = post_count + 1';
 		$this->_db->params($this->_params, $this->_data);
 		$this->_db->updateData();
 	}
 
-	public function getCount()
+	protected function getValue($row)
 	{
-		$this->_params['rows'] = 'post_count';
+		if (empty($row))
+			return false;
+
+		if (!in_array($this->_rows, $row))
+			return false;
+
+		$this->_params['rows'] = $row;
 		$this->_db->params($this->_params, $this->_data);
 
 		return $this->_db->getData(null, true);
 	}
 
+	public function getCount()
+	{
+		return $this->getValue($this->_rows['post_count']);
+	}
+
+	public function getLimit()
+	{
+		return $this->getValue($this->_rows['post_limit']);
+	}
+
 	public function getBoards()
 	{
-		$this->_params['rows'] = 'id_boards';
-		$this->_db->params($this->_params, $this->_data);
-
-		$result = $this->_db->getData(null, true);
+		$result = $this->getValue($this->_rows['id_boards']);
 
 		if ($result)
 			return explode(',', $this->_db->getData(null, true));
@@ -103,7 +121,29 @@ class PostLimit
 			return false;
 	}
 
-	public function tools()
+	public function customMessage($name)
+	{
+		/* Add in the default replacements. */
+		$replacements = array(
+			'username' => $name,
+			'limit' => $this->getLimit(),
+		);
+
+		/* Split the replacements up into two arrays, for use with str_replace */
+		$find = array();
+		$replace = array();
+
+		foreach ($replacements as $f => $r)
+		{
+			$find[] = '{' . $f . '}';
+			$replace[] = $r;
+		}
+
+		/* Do the variable replacements. */
+		return str_replace($find, $replace, self::tools()->getSetting('custom_message'));
+	}
+
+	public static function tools()
 	{
 		global $sourcedir;
 
@@ -133,12 +173,12 @@ class PostLimit
 	public static function admin(&$admin_areas)
 	{
 		$admin_areas['config']['areas']['postlimit'] = array(
-					'label' => $this->_tools->getText('admin_panel'),
+					'label' => self::tools()->getText('admin_panel'),
 					'file' => 'PostLimit.php',
 					'function' => 'wrapper_admin_dispatch',
 					'icon' => 'posts.gif',
 					'subsections' => array(
-						'general' => array($this->_tools->getText('admin_panel_settings')),
+						'general' => array(self::tools()->getText('admin_panel_settings')),
 				),
 		);
 	}
@@ -150,7 +190,7 @@ class PostLimit
 
 		require_once($sourcedir.'/ManageSettings.php');
 
-		$context['page_title'] = $this->_tools->getText('admin_panel');
+		$context['page_title'] = self::tools()->getText('admin_panel');
 
 		$subActions = array(
 			'general' => 'wrapper_admin_settings',
@@ -160,8 +200,8 @@ class PostLimit
 
 		// Load up all the tabs...
 		$context[$context['admin_menu_name']]['tab_data'] = array(
-			'title' => $this->_tools->getText('admin_panel'),
-			'description' => $this->_tools->getText('admin_panel_desc', 'Text') . self::$faq->phpVersion(),
+			'title' => self::tools()->getText('admin_panel'),
+			'description' => self::tools()->getText('admin_panel_desc'),
 			'tabs' => array(
 				'general' => array(),
 			),
@@ -178,11 +218,8 @@ class PostLimit
 		require_once($sourcedir.'/ManageServer.php');
 
 		$config_vars = array(
-			array(
-				'check',
-				'faqmod_use_javascript',
-				'subtext' => $this->_tools->getText('enable_sub')
-			),
+			array('check', 'PostLimit_enable','subtext' => self::tools()->getText('enable_sub')),
+			array('large_text', 'PostLimit_custom_message', '6" style="width:95%'),
 		);
 
 		$context['post_url'] = $scripturl . '?action=admin;area=postlimit;sa=basic;save';

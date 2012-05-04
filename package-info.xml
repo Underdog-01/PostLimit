@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>Suki:PostLimit</id>
 	<name>PostLimit</name>
-	<version>1.0 Beta 2</version>
+	<version>1.0</version>
 	<type>modification</type>
 
 	<install for="2.0 - 2.0.99">
@@ -12,6 +12,7 @@
 		<code>hooks.php</code>
 		<modification>PostLimit.xml</modification>
 		<require-file name="PostLimit.php" destination="$sourcedir">Source file</require-file>
+		<require-file name="Subs-PostLimit.php" destination="$sourcedir">Source file</require-file>
 		<require-file name="PostLimit.english.php" destination="$languagedir">Language file</require-file>
 		<redirect url="$scripturl?action=admin;area=postlimit" timeout="4000">redirect.txt</redirect>
 	</install>
@@ -21,6 +22,7 @@
 		<database>install.php</database>
 		<modification reverse="true">PostLimit.xml</modification>
 		<remove-file name="$sourcedir/PostLimit.php" />
+		<remove-file name="$sourcedir/Subs-PostLimit.php" />
 		<remove-file name="$languagedir/PostLimit.english.php" />
 	</uninstall>
 
