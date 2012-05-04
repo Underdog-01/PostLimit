@@ -60,6 +60,7 @@ class PostLimit
 			'id_user' => $this->_user
 		);
 		$this->_rows = array(
+			'id_user' => 'id_user',
 			'post_count' => 'post_count',
 			'post_limit' => 'post_limit',
 			'id_boards' => 'id_boards'
@@ -87,6 +88,17 @@ class PostLimit
 
 		if ($this->_db->getData(null, true))
 			return $this->_db->getData(null, true);
+
+		else
+			return false;
+	}
+
+	public function rowExists()
+	{
+		$return = $this->getValue($this->_rows['id_user']);
+
+		if (!empty($return))
+			return true;
 
 		else
 			return false;
@@ -128,6 +140,39 @@ class PostLimit
 			return false;
 	}
 
+	public function updateRow($data)
+	{
+		/* Update! */
+		$this->_params['set'] = 'post_limit = {int:limit}, id_boards = {string:boards}';
+		$this->_data['limit'] = $data['limit'];
+		$this->_data['boards'] = $data['boards'];
+
+		$this->_db->params($this->_params, $this->_data);
+		$this->_db->updateData();
+	}
+	
+	public function createRow($data)
+	{
+		$tdata = array(
+			'id_user' => 'int',
+			'id_boards' => 'string',
+			'post_limit' => 'int',
+			'post_count' => 'int'
+		);
+		$tvalues = array(
+			$data['user'],
+			$data['boards'],
+			$data['limit'],
+			0,
+		);
+		$indexes = array(
+			'id_user'
+		);
+
+		/* Insert! */
+		$this->_db->insertData($tdata, $tvalues, $indexes);
+	}
+	
 	public function customMessage($name)
 	{
 		/* Add in the default replacements. */
@@ -198,7 +243,6 @@ class PostLimit
 	{
 		global $context, $user_info, $txt, $scripturl;
 
-		/* checkSession(); */
 		loadtemplate('PostLimit');
 
 			/* Set all the page stuff */
@@ -209,8 +253,6 @@ class PostLimit
 		$context['user']['is_owner'] = $context['member']['id'] == $user_info['id'];
 		$context['canonical_url'] = $scripturl . '?action=profile;u=' . $context['member']['id'];
 		$context['postLimit']['cannot'] = null;
-		$context['postLimit']['limit'] = 0;
-		$context['postLimit']['boards'] = '';
 
 		/* You cannot be here if you don't have the permission or if you are trying to set your own limit or if this user is an admin */
 		if (!allowedTo('PostLimit_can_set_post_limit'))
@@ -224,9 +266,43 @@ class PostLimit
 
 		/* Get this user's limit */
 		$pl_user = new PostLimit($context['member']['id']);
+		$pl_limit = $pl_user->getLimit();
+		$pl_count = $pl_user->getCount();
+		$pl_boards = $pl_user->getBoards();
 
-		if (!empty($pl_user->getLimit()))
-			$context['postLimit']['limit'] = $pl_user->getLimit();
+		$context['postLimit'] = array(
+			'limit' => !empty($pl_limit) ? $pl_limit : 0,
+			'count' => !empty($pl_count) ? $pl_count : 0,
+			'boards' => !empty($pl_boards) ? $pl_limit : '',
+		);
+
+		if (isset($_GET['save']))
+		{
+			checkSession();
+
+			if (isset($_REQUEST['postboards']))
+				$_REQUEST['postboards'] = explode(',', preg_replace('/[^0-9,]/', '', $_REQUEST['postboards']));
+
+			if (isset($_REQUEST['postlimit']))
+				$_REQUEST['postlimit'] = preg_replace('/[^0-9,]/', '', $_REQUEST['postlimit']);
+
+			/* Get the data */
+			$data = array(
+				'user' => $context['member']['id'],
+				'limit' => (int) $_REQUEST['postlimit'],
+				'boards' => implode(',', $_REQUEST['postboards'])
+			);
+
+			/* Update */
+			if ($pl_user->rowExists())
+				$pl_user->updateRow($data);
+
+			/* Save */
+			else
+				$pl_user->createRow($data);
+
+			redirectexit('action=profile;area=userlimit;u='. $context['member']['id'] .'');
+		}
 	}
 
 	/* Admin menu hook */

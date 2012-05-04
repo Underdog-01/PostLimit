@@ -72,14 +72,14 @@ function template_postLimit_profile_page()
 								<span id="caption_subject">', $txt['PostLimit_profile_userlimit'] ,'</span>
 							</dt>
 							<dd>
-								<input type="text" name="postlimit" size="5" tabindex="1" maxlength="5" value="0" class="input_text" /><br />
+								<input type="text" name="postlimit" size="5" tabindex="1" maxlength="5" value="', $context['postLimit']['limit'] ,'" class="input_text" /><br />
 								', $txt['PostLimit_profile_userlimit_desc'] ,'
 							</dd>
 							<dt>
 								<span id="caption_subject">', $txt['PostLimit_profile_boards'] ,'</span>
 							</dt>
 							<dd>
-								<input type="text" name="postlimit" size="25" tabindex="1" maxlength="25" value="" class="input_text" /><br />
+								<input type="text" name="postboards" size="25" tabindex="1" maxlength="25" value="', $context['postLimit']['boards'] ,'" class="input_text" /><br />
 								', $txt['PostLimit_profile_boards_desc'] ,'
 							</dd>
 						</dl>
