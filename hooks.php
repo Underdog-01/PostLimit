@@ -34,6 +34,7 @@
 		'integrate_pre_include' => '$sourcedir/PostLimit.php',
 		'integrate_load_permissions' => 'PostLimit::permissions',
 		'integrate_admin_areas' => 'PostLimit::admin',
+		'integrate_profile_areas' => 'PostLimit::profileHook'
 	);
 
 		$call = 'add_integration_function';

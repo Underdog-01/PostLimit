@@ -259,4 +259,6 @@ class PostLimitTools
 		else
 			return false;
 	}
+
+	public function __destruct() {}
 }

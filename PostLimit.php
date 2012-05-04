@@ -31,6 +31,7 @@ if (!defined('SMF'))
 /* Wrapper functions */
 function wrapper_admin_dispatch(){ PostLimit::settingsDispatch(); }
 function wrapper_admin_settings() { PostLimit::settings(); }
+function wrapper_profile_page() { PostLimit::profilePage(); }
 
 class PostLimit
 {
@@ -42,13 +43,15 @@ class PostLimit
 	private $_rows = array();
 	static private $_dbTableName = 'post_limit';
 
-	public function __construct($user, $board)
+	public function __construct($user, $board = false)
 	{
-		if (empty($user) || empty($board))
+		if (empty($user))
 			return false;
 
-		$this->_user = $user;
-		$this->_board = $board;
+		if ($board)
+			$this->_board = $board;
+
+				$this->_user = $user;
 		$this->_db = $this->db(self::$_dbTableName);
 		$this->_params = array(
 			'where' => 'id_user = {int:id_user}'
@@ -82,7 +85,11 @@ class PostLimit
 		$this->_params['rows'] = $row;
 		$this->_db->params($this->_params, $this->_data);
 
-		return $this->_db->getData(null, true);
+		if ($this->_db->getData(null, true))
+			return $this->_db->getData(null, true);
+
+		else
+			return false;
 	}
 
 	public function getCount()
@@ -164,9 +171,62 @@ class PostLimit
 	/* Permissions */
 	public static function permissions(&$permissionGroups, &$permissionList)
 	{
-		$permissionList['membergroup']['PostLimit_edit_settings_any'] = array(false, 'PostLimit_per_classic', 'PostLimit_per_simple');
+		$permissionList['membergroup']['PostLimit_can_set_post_limit'] = array(false, 'PostLimit_per_classic', 'PostLimit_per_simple');
 		$permissionGroups['membergroup']['simple'] = array('PostLimit_per_simple');
 		$permissionGroups['membergroup']['classic'] = array('PostLimit_per_classic');
+	}
+
+	/* Profile hook */
+	public static function profileHook(&$profile_areas)
+	{
+		global $sourcedir, $context;
+
+		if (self::tools()->getSetting('enable'))
+			$profile_areas['info']['areas']['userlimit'] = array(
+				'label' => self::tools()->getText('profile_panel'),
+				'file' => 'PostLimit.php',
+				'function' => 'wrapper_profile_page',
+				'permission' => array(
+					'own' => 'PostLimit_can_set_post_limit',
+					'any' => 'PostLimit_can_set_post_limit',
+				),
+			);
+	}
+
+	/* Profile page */
+	public static function profilePage()
+	{
+		global $context, $user_info, $txt, $scripturl;
+
+		/* checkSession(); */
+		loadtemplate('PostLimit');
+
+			/* Set all the page stuff */
+		$context['sub_template'] = 'postLimit_profile_page';
+		$context += array(
+			'page_title' => sprintf($txt['profile_of_username'], $context['member']['name']),
+		);
+		$context['user']['is_owner'] = $context['member']['id'] == $user_info['id'];
+		$context['canonical_url'] = $scripturl . '?action=profile;u=' . $context['member']['id'];
+		$context['postLimit']['cannot'] = null;
+		$context['postLimit']['limit'] = 0;
+		$context['postLimit']['boards'] = '';
+
+		/* You cannot be here if you don't have the permission or if you are trying to set your own limit or if this user is an admin */
+		if (!allowedTo('PostLimit_can_set_post_limit'))
+			$context['postLimit']['cannot'] = self::tools()->getText('message_cannot');
+
+		elseif ($context['member']['group_id'] == 1)
+			$context['postLimit']['cannot'] = self::tools()->getText('message_cannot_admin');
+
+		elseif ($context['user']['is_owner'])
+			$context['postLimit']['cannot'] = self::tools()->getText('message_cannot_own');
+
+		/* Get this user's limit */
+		$pl_user = new PostLimit($context['member']['id']);
+
+		if (!empty($pl_user->getLimit()))
+			$context['postLimit']['limit'] = $pl_user->getLimit();
 	}
 
 	/* Admin menu hook */
@@ -228,6 +288,10 @@ class PostLimit
 		if (isset($_GET['save']))
 		{
 			checkSession();
+
+			/* Force a new instance */
+			self::tools()->__destruct();
+
 			saveDBSettings($config_vars);
 			redirectexit('action=admin;area=postlimit;sa=basic');
 		}

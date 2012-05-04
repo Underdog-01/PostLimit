@@ -35,6 +35,7 @@
 		'integrate_admin_areas' => 'wrapper_post_limit_admin',
 		'integrate_load_permissions' => 'PostLimit::permissions',
 		'integrate_admin_areas' => 'PostLimit::admin',
+		'integrate_profile_areas' => 'PostLimit::profileHook'
 	);
 
 		$call = 'remove_integration_function';
