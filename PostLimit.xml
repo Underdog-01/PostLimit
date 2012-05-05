@@ -53,8 +53,33 @@
 
 	/* PostLimit mod */]]></add>
 		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[// Sneaking off, are we?]]></search>
+			<add><![CDATA[/* PostLimit mod */
+	$pl_postLimit = new PostLimit($user_info['id'], $board);
+
+	/* Is this board limited? */
+	if ($pl_postLimit->isBoardLimited())
+		if ($pl_userCount >= $pl_userLimit)
+			fatal_error($pl_postLimit->customMessage($user_info['name']), false);
+	/* PostLimit mod */
+
+	// Sneaking off, are we?]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[if (isset($topicOptions['id']))
+			$topic = $topicOptions['id'];]]></search>
+			<add><![CDATA[if (isset($topicOptions['id']))
+			$topic = $topicOptions['id'];
+
+		/* Post Limit mod */
+		$pl_postLimit =  new PostLimit($user_info['id']);
+		$pl_postLimit->updateCount();]]></add>
+		</operation>
 	</file>
-	
+
 	<file name="$sourcedir/ScheduledTasks.php">
 		<operation>
 			<search position="replace"><![CDATA[// Perform the standard checks on expiring/near expiring subscriptions.]]></search>
@@ -76,4 +101,58 @@ function scheduled_postLimit()
 		</operation>
 	</file>
 
+	<file name="$themedir/Post.template.php">
+		<operation>
+			<search position="replace"><![CDATA[// If the user wants to see how their message looks - the preview section is where it's at!]]></search>
+			<add><![CDATA[/* Post Limit mod */
+	if (!empty($context['postLimit']['message']))
+		echo '
+			<div id="postLimit">
+				<div class="cat_bar">
+					<h3 class="catbg">
+						<span id="preview_subject">', $context['postLimit']['title'] ,'</span>
+					</h3>
+				</div>
+				<div class="windowbg">
+					<span class="topslice"><span></span></span>
+					<div class="content">
+						<div class="post" id="preview_body">
+							', $context['postLimit']['message'] , '
+						</div>
+					</div>
+					<span class="botslice"><span></span></span>
+				</div>
+			</div><br />';
+
+	// If the user wants to see how their message looks - the preview section is where it's at!]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="replace"><![CDATA[if ($context['can_reply'] && !empty($options['display_quick_reply']))
+	{]]></search>
+			<add><![CDATA[if ($context['can_reply'] && !empty($options['display_quick_reply']))
+	{
+		/* Post Limit mod */
+		if (!empty($context['postLimit']['message']))
+			echo '
+				<div id="postLimit">
+					<div class="cat_bar">
+						<h3 class="catbg">
+							<span id="preview_subject">', $context['postLimit']['title'] ,'</span>
+						</h3>
+					</div>
+					<div class="windowbg">
+						<span class="topslice"><span></span></span>
+						<div class="content">
+							<div class="post" id="preview_body">
+								', $context['postLimit']['message'] , '
+							</div>
+						</div>
+						<span class="botslice"><span></span></span>
+					</div>
+				</div><br />';]]></add>
+		</operation>
+	</file>
 </modification>
