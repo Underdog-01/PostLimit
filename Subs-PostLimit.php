@@ -187,7 +187,7 @@ class PostLimitTools
 	public static function getInstance()
 	{
 		if (!self::$_instance)
-		 {
+		{
 			self::$_instance = new PostLimitTools();
 		}
 		return self::$_instance;

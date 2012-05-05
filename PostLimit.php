@@ -190,7 +190,12 @@ class PostLimit
 		}
 
 		/* Do the variable replacements. */
-		return str_replace($find, $replace, self::tools()->getSetting('custom_message'));
+		if (self::tools()->enable('custom_message'))
+			return str_replace($find, $replace, self::tools()->getSetting('custom_message'));
+
+		/* If no message was set, use the defalut one */
+		else
+			return str_replace($find, $replace, self::tools()->getText('message_default'));
 	}
 
 	public static function tools()

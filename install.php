@@ -90,7 +90,7 @@
 				'disabled' => 'int',
 				'task' => 'string',
 			),
-			array(null,0,0,1,'d',0,'postLimit'
+			array(0,0,0,1,'d',0,'postLimit'
 			),
 			array('task')
 		);

@@ -37,7 +37,7 @@
 		'integrate_profile_areas' => 'PostLimit::profileHook'
 	);
 
-		$call = 'add_integration_function';
+	$call = 'add_integration_function';
 
 	foreach ($hooks as $hook => $function)
 		$call($hook, $function);

@@ -27,16 +27,15 @@
 
  global $txt;
 
-$txt['PostLimit_'] = '';
-
- /* Admin panel */
+/* Admin panel */
+$txt['PostLimit_message_default'] = 'Hi {username}, you don\'t have any more messages left for today.';
 $txt['PostLimit_admin_panel'] = 'Post Limit admin panel';
 $txt['PostLimit_admin_panel_settings'] = 'Settings';
 $txt['PostLimit_admin_panel_desc'] = 'From here you can set some global settings for the mod';
 $txt['PostLimit_enable'] = 'Enable the mod';
 $txt['PostLimit_enable_sub'] = 'This Setting must be on for the mod to work properly.';
 $txt['PostLimit_custom_message'] = 'Put your custom message here';
-$txt['PostLimit_custom_message_sub'] = 'Write the custom message the user will see, you can use {username} and {limit} to personalize the message even more<br />- {username} will display the nick of the user who will receive the message<br />- {limit} will display the amount of messages this particular user can made.';
+$txt['PostLimit_custom_message_sub'] = 'Write the custom message the user will see, you can use {username} and {limit} to personalize the message even more<br />- {username} will display the nick of the user who will receive the message<br />- {limit} will display the amount of messages this particular user can made.<br /> If you leave this message empty, the default message will appear: '. $txt['PostLimit_message_default'] .'';
 $txt['PostLimit_profile_panel'] = 'Post Limit profile panel';
 
 /* Messages */
