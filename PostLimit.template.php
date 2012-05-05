@@ -32,7 +32,7 @@ function template_postLimit_profile_page()
 {
 	global $txt, $context, $scripturl;
 
-	if ($context['postLimit']['cannot'])
+	if (!empty($context['postLimit']['cannot']))
 		echo '
 				<span class="clear upperframe">
 					<span></span>
@@ -66,7 +66,7 @@ function template_postLimit_profile_page()
 					<div class="innerframe">';
 					
 				/* Form */
-				echo '<form action="', $scripturl , '?action=profile;area=userlimit;u=', $context['member']['id'] ,';sa=save" method="post" target="_self" id="postmodify" class="flow_hidden" onsubmit="submitonce(this);" >
+				echo '<form action="', $scripturl , '?action=profile;area=userlimit;u=', $context['member']['id'] ,';save" method="post" target="_self" id="postmodify" class="flow_hidden" onsubmit="submitonce(this);" >
 						<dl id="post_header">
 							<dt>
 								<span id="caption_subject">', $txt['PostLimit_profile_userlimit'] ,'</span>

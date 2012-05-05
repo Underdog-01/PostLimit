@@ -80,14 +80,17 @@ class PostLimit
 		if (empty($row))
 			return false;
 
-		if (!in_array($this->_rows, $row))
+		if (!in_array($row, $this->_rows))
 			return false;
 
-		$this->_params['rows'] = $row;
+		$this->_params['rows'] = implode(',', $this->_rows);
 		$this->_db->params($this->_params, $this->_data);
+		$this->_db->getData(null, true);
 
-		if ($this->_db->getData(null, true))
-			return $this->_db->getData(null, true);
+		$return = $this->_db->dataResult();
+
+		if (!empty($return))
+			return $return[$row];
 
 		else
 			return false;
@@ -116,13 +119,7 @@ class PostLimit
 
 	public function getBoards()
 	{
-		$result = $this->getValue($this->_rows['id_boards']);
-
-		if ($result)
-			return explode(',', $this->_db->getData(null, true));
-
-		else
-			return false;
+		return $result = $this->getValue($this->_rows['id_boards']);
 	}
 
 	public function isBoardLimited()
@@ -150,7 +147,7 @@ class PostLimit
 		$this->_db->params($this->_params, $this->_data);
 		$this->_db->updateData();
 	}
-	
+
 	public function createRow($data)
 	{
 		$tdata = array(
@@ -172,7 +169,7 @@ class PostLimit
 		/* Insert! */
 		$this->_db->insertData($tdata, $tvalues, $indexes);
 	}
-	
+
 	public function customMessage($name)
 	{
 		/* Add in the default replacements. */
@@ -245,7 +242,7 @@ class PostLimit
 
 		loadtemplate('PostLimit');
 
-			/* Set all the page stuff */
+		/* Set all the page stuff */
 		$context['sub_template'] = 'postLimit_profile_page';
 		$context += array(
 			'page_title' => sprintf($txt['profile_of_username'], $context['member']['name']),
@@ -273,35 +270,40 @@ class PostLimit
 		$context['postLimit'] = array(
 			'limit' => !empty($pl_limit) ? $pl_limit : 0,
 			'count' => !empty($pl_count) ? $pl_count : 0,
-			'boards' => !empty($pl_boards) ? $pl_limit : '',
+			'boards' => !empty($pl_boards) ? $pl_boards : '',
 		);
 
 		if (isset($_GET['save']))
 		{
 			checkSession();
 
-			if (isset($_REQUEST['postboards']))
-				$_REQUEST['postboards'] = explode(',', preg_replace('/[^0-9,]/', '', $_REQUEST['postboards']));
+			if (isset($_REQUEST['postboards']) && isset($_REQUEST['postlimit']))
+			{
+				$temp_boards = explode(',', preg_replace('/[^0-9,]/', '', $_REQUEST['postboards']));
 
-			if (isset($_REQUEST['postlimit']))
+				foreach ($temp_boards as $key => $value)
+					if ($value == '')
+						unset($temp_boards[$key]);
+
 				$_REQUEST['postlimit'] = preg_replace('/[^0-9,]/', '', $_REQUEST['postlimit']);
 
-			/* Get the data */
-			$data = array(
-				'user' => $context['member']['id'],
-				'limit' => (int) $_REQUEST['postlimit'],
-				'boards' => implode(',', $_REQUEST['postboards'])
-			);
+				/* Get the data */
+				$data = array(
+					'user' => $context['member']['id'],
+					'limit' => (int) $_REQUEST['postlimit'],
+					'boards' => implode(',', $temp_boards)
+				);
 
-			/* Update */
-			if ($pl_user->rowExists())
-				$pl_user->updateRow($data);
+				/* Update */
+				if ($pl_user->rowExists())
+					$pl_user->updateRow($data);
 
-			/* Save */
-			else
-				$pl_user->createRow($data);
+				/* Save */
+				else
+					$pl_user->createRow($data);
 
-			redirectexit('action=profile;area=userlimit;u='. $context['member']['id'] .'');
+				redirectexit('action=profile;area=userlimit;u='. $context['member']['id'] .'');
+			}
 		}
 	}
 

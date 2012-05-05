@@ -59,3 +59,7 @@ $txt['permissionname_PostLimit_can_set_post_limit'] = 'Can set post limits';
 $txt['PostLimit_message_cannot'] = $txt['cannot_can_set_post_limit'];
 $txt['PostLimit_message_cannot_admin'] = 'Admins cannot be limited';
 $txt['PostLimit_message_cannot_own'] = 'You cannot set your own limit';
+
+/* Scheduled Task */
+$txt['scheduled_task_postLimit'] = 'Post Limit mod';
+$txt['scheduled_task_desc_postLimit'] = 'Resets the post limit of every user down to 0.';

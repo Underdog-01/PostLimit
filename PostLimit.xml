@@ -4,7 +4,7 @@
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>Suki:PostLimit</id>
 	<version>1.0</version>
-	
+
 	<file name="$sourcedir/Post.php">
 		<operation>
 			<search position="replace"><![CDATA[// You must be posting to *some* board.
@@ -52,6 +52,27 @@
 	}
 
 	/* PostLimit mod */]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/ScheduledTasks.php">
+		<operation>
+			<search position="replace"><![CDATA[// Perform the standard checks on expiring/near expiring subscriptions.]]></search>
+			<add><![CDATA[/* Post Limit mod */
+function scheduled_postLimit()
+{
+	global $smcFunc;
+
+	$result = $smcFunc['db_query']('',
+		'UPDATE {db_prefix}post_limit
+		SET post_count = 0',
+		array()
+	);
+
+	return true;
+}
+
+// Perform the standard checks on expiring/near expiring subscriptions.]]></add>
 		</operation>
 	</file>
 

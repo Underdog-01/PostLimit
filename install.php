@@ -15,7 +15,7 @@
  * Version: MPL 2.0
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, 
+ * If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/
  *
  * Software distributed under the License is distributed on an "AS IS" basis,
@@ -77,4 +77,22 @@
 		);
 
 		$smcFunc['db_create_table']($db_prefix . $table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
+
+		/* Add the Scheduled Task */
+		$smcFunc['db_insert']('ignore',
+			'{db_prefix}scheduled_tasks',
+			array(
+				'id_task' => 'int',
+				'next_time' => 'int',
+				'time_offset' => 'int',
+				'time_regularity' => 'int',
+				'time_unit' => 'string',
+				'disabled' => 'int',
+				'task' => 'string',
+			),
+			array(null,0,0,1,'d',0,'postLimit'
+			),
+			array('task')
+		);
 	}
+ 
