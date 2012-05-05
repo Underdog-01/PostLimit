@@ -57,14 +57,14 @@ function template_postLimit_profile_page()
 						</span>
 					</h3>
 				</div>';
-				
+
 				echo '
 				<span class="clear upperframe">
 					<span></span>
 				</span>
 				<div class="roundframe rfix">
 					<div class="innerframe">';
-					
+
 				/* Form */
 				echo '<form action="', $scripturl , '?action=profile;area=userlimit;u=', $context['member']['id'] ,';save" method="post" target="_self" id="postmodify" class="flow_hidden" onsubmit="submitonce(this);" >
 						<dl id="post_header">
@@ -87,7 +87,7 @@ function template_postLimit_profile_page()
 						<input type="hidden" id="', $context['session_var'], '" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="submit" name="send" class="sbtn" value="', $txt['PostLimit_profile_save'] ,'" />
 					</div>';
-					
+
 				echo '
 					</div>
 				</div>

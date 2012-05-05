@@ -59,6 +59,12 @@
 			<add><![CDATA[/* PostLimit mod */
 	$pl_postLimit = new PostLimit($user_info['id'], $board);
 
+	/* Get the user's post limit */
+	$pl_userLimit = $pl_postLimit->getLimit();
+
+	/* Get the user's current post count */
+	$pl_userCount = $pl_postLimit->getCount();
+
 	/* Is this board limited? */
 	if ($pl_postLimit->isBoardLimited())
 		if ($pl_userCount >= $pl_userLimit)
@@ -77,6 +83,46 @@
 		/* Post Limit mod */
 		$pl_postLimit =  new PostLimit($user_info['id']);
 		$pl_postLimit->updateCount();]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="replace"><![CDATA[// Find the previous or next topic.  Make a fuss if there are no more.]]></search>
+			<add><![CDATA[/* Let's define some $context vars for the PostLimit mod shall we? */
+	$pl_postLimit = new PostLimit($user_info['id'], $board_info['id']);
+	$context['postLimit'] = array(
+		'message' => '',
+		'title' => ''
+	);
+
+	/* Is this board limited? */
+	if ($pl_postLimit->isBoardLimited())
+	{
+		/* Get the user's post limit */
+		$pl_userLimit = $pl_postLimit->getLimit();
+
+		/* Get the user's current post count */
+		$pl_userCount = $pl_postLimit->getCount();
+
+		$context['postLimit']['title'] = sprintf(PostLimit::tools()->getText('message_title'), $user_info['name']);
+
+		/* Define what we are gonna do */
+		if ($pl_userCount < $pl_userLimit)
+		{
+			/* Just how many messages are left? */
+			$pl_messagesLeft = $pl_userLimit - $pl_userCount;
+
+			if ($pl_messagesLeft <= 3)
+				$context['postLimit']['message'] = sprintf(PostLimit::tools()->getText('message'), $pl_messagesLeft);
+		}
+
+		elseif ($pl_userCount >= $pl_userLimit)
+			$context['postLimit']['message'] = sprintf(PostLimit::tools()->getText('message_overlimit'), $pl_userLimit);
+	}
+	/* PostLimit mod */
+
+	// Find the previous or next topic.  Make a fuss if there are no more.]]></add>
 		</operation>
 	</file>
 

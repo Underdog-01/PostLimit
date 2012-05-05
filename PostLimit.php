@@ -37,7 +37,6 @@ class PostLimit
 {
 	private $_user;
 	private $_board;
-	public static $tools;
 	private $_params = array();
 	private $_data = array();
 	private $_rows = array();
@@ -51,7 +50,7 @@ class PostLimit
 		if ($board)
 			$this->_board = $board;
 
-				$this->_user = $user;
+		$this->_user = $user;
 		$this->_db = $this->db(self::$_dbTableName);
 		$this->_params = array(
 			'where' => 'id_user = {int:id_user}'
@@ -124,9 +123,11 @@ class PostLimit
 
 	public function isBoardLimited()
 	{
-		if ($this->getBoards() != false)
+		$boardArray = explode(',', $this->getBoards());
+
+		if ($boardArray != false && is_array($boardArray))
 		{
-			if (in_array($this->_board, $this->getBoards()))
+			if (in_array($this->_board, $boardArray))
 				return true;
 
 			else
@@ -357,7 +358,7 @@ class PostLimit
 
 		$config_vars = array(
 			array('check', 'PostLimit_enable','subtext' => self::tools()->getText('enable_sub')),
-			array('large_text', 'PostLimit_custom_message', '6" style="width:95%'),
+			array('large_text', 'PostLimit_custom_message', 'subtext' => self::tools()->getText('custom_message_sub')),
 		);
 
 		$context['post_url'] = $scripturl . '?action=admin;area=postlimit;sa=basic;save';

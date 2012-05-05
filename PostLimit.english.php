@@ -35,14 +35,14 @@ $txt['PostLimit_admin_panel_settings'] = 'Settings';
 $txt['PostLimit_admin_panel_desc'] = 'From here you can set some global settings for the mod';
 $txt['PostLimit_enable'] = 'Enable the mod';
 $txt['PostLimit_enable_sub'] = 'This Setting must be on for the mod to work properly.';
-$txt['PostLimit_custom_message'] = '';
-$txt['PostLimit_custom_message_sub'] = 'Write the cutom message the user will see, you can use {username} and {limit} to personalize the message even more<br />- {username} will display the nick of the user who will receive the message<br />- {limit} will display the amount of messages this particular user can made.';
+$txt['PostLimit_custom_message'] = 'Put your custom message here';
+$txt['PostLimit_custom_message_sub'] = 'Write the custom message the user will see, you can use {username} and {limit} to personalize the message even more<br />- {username} will display the nick of the user who will receive the message<br />- {limit} will display the amount of messages this particular user can made.';
 $txt['PostLimit_profile_panel'] = 'Post Limit profile panel';
 
 /* Messages */
-$txt['PostLimit_message_1'] = 'You have 1 message left';
-$txt['PostLimit_message_2'] = 'You have 2 messages left';
-$txt['PostLimit_message_3'] = 'You have 3 messages left';
+$txt['PostLimit_message_overlimit'] = 'You don\'t have any more messages left, your limit is: %d';
+$txt['PostLimit_message'] = 'You have %d message left today';
+$txt['PostLimit_message_title'] = 'Attention %s!';
 
 /* Profile fields */
 $txt['PostLimit_profile_userlimit'] = 'Post Limit';
