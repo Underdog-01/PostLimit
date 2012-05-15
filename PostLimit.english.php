@@ -54,7 +54,7 @@ $txt['PostLimit_profile_save'] = 'Save';
 
 /* Permissions strings */
 $txt['cannot_can_set_post_limit'] = 'I\'m sorry, you are not allowed to set post limits.';
-$txt['permissiongroup_PostLimit_per_simple'] = 'Post Limit mod permissions';
+$txt['permissiongroup_simple_PostLimit_per_simple'] = 'Post Limit mod permissions';
 $txt['permissiongroup_PostLimit_per_classic'] = 'Post Limit mod permissions';
 $txt['permissionname_PostLimit_can_set_post_limit'] = 'Can set post limits';
 $txt['PostLimit_message_cannot'] = $txt['cannot_can_set_post_limit'];

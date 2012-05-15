@@ -24,7 +24,7 @@
 		);
 
 		/* Is this board limited? or is this user under a global limit? */
-		if ( $pl_postLimit->isBoardLimited() || (!$pl_postLimit->isBoardLimited() && $pl_postLimit->getLimit() && PostLimit::tools()->enable('enable_global_limit')))
+		if ($pl_postLimit->isBoardLimited() || ($pl_postLimit->getBoards() == false && $pl_postLimit->getLimit() >= 1 && PostLimit::tools()->enable('enable_global_limit')))
 		{
 			/* Get the user's post limit */
 			$pl_userLimit = $pl_postLimit->getLimit();
@@ -54,7 +54,7 @@
 		<operation>
 			<search position="replace"><![CDATA[// Sneaking off, are we?]]></search>
 			<add><![CDATA[/* PostLimit mod */
-		if (PostLimit::tools()->enable('enable') && !$user_info['is_guest'])
+	if (PostLimit::tools()->enable('enable') && !$user_info['is_guest'])
 	{
 		$pl_postLimit = new PostLimit($user_info['id'], $board);
 
@@ -64,8 +64,8 @@
 		/* Get the user's current post count */
 		$pl_userCount = $pl_postLimit->getCount();
 
-		/* Is this board limited? */
-		if ($pl_postLimit->isBoardLimited() || (!$pl_postLimit->isBoardLimited() && $pl_postLimit->getLimit() && PostLimit::tools()->enable('enable_global_limit')))
+		/* Is this board limited? or is this user under a global limit? */
+		if ($pl_postLimit->isBoardLimited() || ($pl_postLimit->getBoards() == false && $pl_postLimit->getLimit() >= 1 && PostLimit::tools()->enable('enable_global_limit')))
 			if ($pl_userCount >= $pl_userLimit)
 				fatal_error($pl_postLimit->customMessage($user_info['name']), false);
 	}
@@ -103,8 +103,8 @@
 			'title' => ''
 		);
 
-		/* Is this board limited? */
-		if ($pl_postLimit->isBoardLimited() || (!$pl_postLimit->isBoardLimited() && $pl_postLimit->getLimit() && PostLimit::tools()->enable('enable_global_limit')))
+		/* Is this board limited? or is this user under a global limit? */
+		if ($pl_postLimit->isBoardLimited() || ($pl_postLimit->getBoards() == false && $pl_postLimit->getLimit() >= 1 && PostLimit::tools()->enable('enable_global_limit')))
 		{
 			/* Get the user's post limit */
 			$pl_userLimit = $pl_postLimit->getLimit();

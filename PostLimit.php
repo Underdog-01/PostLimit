@@ -37,9 +37,8 @@ class PostLimit
 {
 	private $_user;
 	private $_board;
-	private $_params = array();
-	private $_data = array();
-	private $_rows = array();
+	protected $_data = array();
+	protected $_rows = array();
 	static private $_dbTableName = 'post_limit';
 	static private $name = 'PostLimit';
 	protected $_all = array();
@@ -98,8 +97,11 @@ class PostLimit
 		if (empty($row) || !in_array($row, $this->_rows) || !array_key_exists($this->_user, $return))
 			return false;
 
-		else
+		elseif (isset($return[$this->_user][$row]))
 			return $return[$this->_user][$row];
+
+		else
+			return false;
 	}
 
 	public function rowExists()
@@ -132,7 +134,7 @@ class PostLimit
 	{
 		$boardArray = explode(',', $this->getBoards());
 
-		if ($boardArray != false && is_array($boardArray))
+		if (is_array($boardArray))
 		{
 			if (in_array($this->_board, $boardArray))
 				return true;
