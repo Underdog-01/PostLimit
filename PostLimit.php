@@ -41,6 +41,8 @@ class PostLimit
 	private $_data = array();
 	private $_rows = array();
 	static private $_dbTableName = 'post_limit';
+	static private $name = 'PostLimit';
+	protected $_all = array();
 
 	public function __construct($user, $board = false)
 	{
@@ -52,12 +54,6 @@ class PostLimit
 
 		$this->_user = $user;
 		$this->_db = $this->db(self::$_dbTableName);
-		$this->_params = array(
-			'where' => 'id_user = {int:id_user}'
-		);
-		$this->_data = array(
-			'id_user' => $this->_user
-		);
 		$this->_rows = array(
 			'id_user' => 'id_user',
 			'post_count' => 'post_count',
@@ -66,33 +62,44 @@ class PostLimit
 		);
 	}
 
-	public function updateCount()
+	public function killCache()
 	{
-		/* Update! */
-		$this->_params['set'] = 'post_count = post_count + 1';
-		$this->_db->params($this->_params, $this->_data);
-		$this->_db->updateData();
+		cache_put_data(self::$name, null);
+	}
+
+	protected function getAll()
+	{
+		if (($this->_all = cache_get_data(self::$name, 120)) == null)
+		{
+			$this->_paramsAll['rows'] = implode(',', $this->_rows);
+			$this->_db->params($this->_paramsAll, $this->_data);
+			$this->_db->getData($this->_rows['id_user']);
+
+			$return = $this->_db->dataResult();
+
+			if (!empty($return))
+			{
+				$this->_all = $return;
+
+				cache_put_data(self::$name, $this->_all, 120);
+			}
+
+			else
+				return false;
+		}
+
+		return $this->_all;
 	}
 
 	protected function getValue($row)
 	{
-		if (empty($row))
+		$return = $this->getAll();
+
+		if (empty($row) || !in_array($row, $this->_rows) || !array_key_exists($this->_user, $return))
 			return false;
-
-		if (!in_array($row, $this->_rows))
-			return false;
-
-		$this->_params['rows'] = implode(',', $this->_rows);
-		$this->_db->params($this->_params, $this->_data);
-		$this->_db->getData(null, true);
-
-		$return = $this->_db->dataResult();
-
-		if (!empty($return))
-			return $return[$row];
 
 		else
-			return false;
+			return $return[$this->_user][$row];
 	}
 
 	public function rowExists()
@@ -138,6 +145,17 @@ class PostLimit
 			return false;
 	}
 
+	public function updateCount()
+	{
+		/* Update! */
+		$this->_params['set'] = 'post_count = post_count + 1';
+		$this->_db->params($this->_params, $this->_data);
+		$this->_db->updateData();
+
+		/* Generate a new cache file */
+		$this->killCache();
+	}
+
 	public function updateRow($data)
 	{
 		/* Update! */
@@ -147,6 +165,9 @@ class PostLimit
 
 		$this->_db->params($this->_params, $this->_data);
 		$this->_db->updateData();
+
+		/* Generate a new cache file */
+		$this->killCache();
 	}
 
 	public function createRow($data)
@@ -169,6 +190,9 @@ class PostLimit
 
 		/* Insert! */
 		$this->_db->insertData($tdata, $tvalues, $indexes);
+
+		/* Generate a new cache file */
+		$this->killCache();
 	}
 
 	public function customMessage($name)
@@ -364,6 +388,7 @@ class PostLimit
 		$config_vars = array(
 			array('check', 'PostLimit_enable','subtext' => self::tools()->getText('enable_sub')),
 			array('large_text', 'PostLimit_custom_message', 'subtext' => self::tools()->getText('custom_message_sub')),
+			array('check', 'PostLimit_enable_global_limit','subtext' => self::tools()->getText('enable_global_limit_sub')),
 		);
 
 		$context['post_url'] = $scripturl . '?action=admin;area=postlimit;sa=basic;save';

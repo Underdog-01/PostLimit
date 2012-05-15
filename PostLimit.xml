@@ -15,35 +15,38 @@
 		fatal_lang_error('no_board', false);
 
 	/* PostLimit mod */
-	$pl_postLimit = new PostLimit($user_info['id'], $board_info['id']);
-	$context['postLimit'] = array(
-		'message' => '',
-		'title' => ''
-	);
-
-	/* Is this board limited? */
-	if ($pl_postLimit->isBoardLimited() && PostLimit::tools()->enable('enable'))
+	if (PostLimit::tools()->enable('enable') && !$user_info['is_guest'])
 	{
-		/* Get the user's post limit */
-		$pl_userLimit = $pl_postLimit->getLimit();
+		$pl_postLimit = new PostLimit($user_info['id'], $board_info['id']);
+		$context['postLimit'] = array(
+			'message' => '',
+			'title' => ''
+		);
 
-		/* Get the user's current post count */
-		$pl_userCount = $pl_postLimit->getCount();
-
-		$context['postLimit']['title'] = sprintf(PostLimit::tools()->getText('message_title'), $user_info['name']);
-
-		/* Define what we are gonna do */
-		if ($pl_userCount < $pl_userLimit)
+		/* Is this board limited? or is this user under a global limit? */
+		if ( $pl_postLimit->isBoardLimited() || (!$pl_postLimit->isBoardLimited() && $pl_postLimit->getLimit() && PostLimit::tools()->enable('enable_global_limit')))
 		{
-			/* Just how many messages are left? */
-			$pl_messagesLeft = $pl_userLimit - $pl_userCount;
+			/* Get the user's post limit */
+			$pl_userLimit = $pl_postLimit->getLimit();
 
-			if ($pl_messagesLeft <= 3)
-				$context['postLimit']['message'] = sprintf(PostLimit::tools()->getText('message'), $pl_messagesLeft);
+			/* Get the user's current post count */
+			$pl_userCount = $pl_postLimit->getCount();
+
+			$context['postLimit']['title'] = sprintf(PostLimit::tools()->getText('message_title'), $user_info['name']);
+
+			/* Define what we are gonna do */
+			if ($pl_userCount < $pl_userLimit)
+			{
+				/* Just how many messages are left? */
+				$pl_messagesLeft = $pl_userLimit - $pl_userCount;
+
+				if ($pl_messagesLeft <= 3)
+					$context['postLimit']['message'] = sprintf(PostLimit::tools()->getText('message'), $pl_messagesLeft);
+			}
+
+			elseif ($pl_userCount >= $pl_userLimit)
+				fatal_error($pl_postLimit->customMessage($user_info['name']), false);
 		}
-
-		elseif ($pl_userCount >= $pl_userLimit)
-			fatal_error($pl_postLimit->customMessage($user_info['name']), false);
 	}
 	/* PostLimit mod */]]></add>
 		</operation>
@@ -51,18 +54,21 @@
 		<operation>
 			<search position="replace"><![CDATA[// Sneaking off, are we?]]></search>
 			<add><![CDATA[/* PostLimit mod */
-	$pl_postLimit = new PostLimit($user_info['id'], $board);
+		if (PostLimit::tools()->enable('enable') && !$user_info['is_guest'])
+	{
+		$pl_postLimit = new PostLimit($user_info['id'], $board);
 
-	/* Get the user's post limit */
-	$pl_userLimit = $pl_postLimit->getLimit();
+		/* Get the user's post limit */
+		$pl_userLimit = $pl_postLimit->getLimit();
 
-	/* Get the user's current post count */
-	$pl_userCount = $pl_postLimit->getCount();
+		/* Get the user's current post count */
+		$pl_userCount = $pl_postLimit->getCount();
 
-	/* Is this board limited? */
-	if ($pl_postLimit->isBoardLimited() && PostLimit::tools()->enable('enable'))
-		if ($pl_userCount >= $pl_userLimit)
-			fatal_error($pl_postLimit->customMessage($user_info['name']), false);
+		/* Is this board limited? */
+		if ($pl_postLimit->isBoardLimited() || (!$pl_postLimit->isBoardLimited() && $pl_postLimit->getLimit() && PostLimit::tools()->enable('enable_global_limit')))
+			if ($pl_userCount >= $pl_userLimit)
+				fatal_error($pl_postLimit->customMessage($user_info['name']), false);
+	}
 	/* PostLimit mod */
 
 	// Sneaking off, are we?]]></add>
@@ -75,10 +81,12 @@
 			$topic = $topicOptions['id'];
 
 		/* Post Limit mod */
-		if (PostLimit::tools()->enable('enable'))
+		if (PostLimit::tools()->enable('enable') && !$user_info['is_guest'])
 		{
 			$pl_postLimit =  new PostLimit($user_info['id']);
-			$pl_postLimit->updateCount();
+
+			if ($pl_postLimit->rowExists())
+				$pl_postLimit->updateCount();
 		}]]></add>
 		</operation>
 	</file>
@@ -87,35 +95,38 @@
 		<operation>
 			<search position="replace"><![CDATA[// Find the previous or next topic.  Make a fuss if there are no more.]]></search>
 			<add><![CDATA[/* Let's define some $context vars for the PostLimit mod shall we? */
-	$pl_postLimit = new PostLimit($user_info['id'], $board_info['id']);
-	$context['postLimit'] = array(
-		'message' => '',
-		'title' => ''
-	);
-
-	/* Is this board limited? */
-	if ($pl_postLimit->isBoardLimited() && PostLimit::tools()->enable('enable'))
+	if (PostLimit::tools()->enable('enable') && !$user_info['is_guest'])
 	{
-		/* Get the user's post limit */
-		$pl_userLimit = $pl_postLimit->getLimit();
+		$pl_postLimit = new PostLimit($user_info['id'], $board_info['id']);
+		$context['postLimit'] = array(
+			'message' => '',
+			'title' => ''
+		);
 
-		/* Get the user's current post count */
-		$pl_userCount = $pl_postLimit->getCount();
-
-		$context['postLimit']['title'] = sprintf(PostLimit::tools()->getText('message_title'), $user_info['name']);
-
-		/* Define what we are gonna do */
-		if ($pl_userCount < $pl_userLimit)
+		/* Is this board limited? */
+		if ($pl_postLimit->isBoardLimited() || (!$pl_postLimit->isBoardLimited() && $pl_postLimit->getLimit() && PostLimit::tools()->enable('enable_global_limit')))
 		{
-			/* Just how many messages are left? */
-			$pl_messagesLeft = $pl_userLimit - $pl_userCount;
+			/* Get the user's post limit */
+			$pl_userLimit = $pl_postLimit->getLimit();
 
-			if ($pl_messagesLeft <= 3)
-				$context['postLimit']['message'] = sprintf(PostLimit::tools()->getText('message'), $pl_messagesLeft);
+			/* Get the user's current post count */
+			$pl_userCount = $pl_postLimit->getCount();
+
+			$context['postLimit']['title'] = sprintf(PostLimit::tools()->getText('message_title'), $user_info['name']);
+
+			/* Define what we are gonna do */
+			if ($pl_userCount < $pl_userLimit)
+			{
+				/* Just how many messages are left? */
+				$pl_messagesLeft = $pl_userLimit - $pl_userCount;
+
+				if ($pl_messagesLeft <= 3)
+					$context['postLimit']['message'] = sprintf(PostLimit::tools()->getText('message'), $pl_messagesLeft);
+			}
+
+			elseif ($pl_userCount >= $pl_userLimit)
+				$context['postLimit']['message'] = sprintf(PostLimit::tools()->getText('message_overlimit'), $pl_userLimit);
 		}
-
-		elseif ($pl_userCount >= $pl_userLimit)
-			$context['postLimit']['message'] = sprintf(PostLimit::tools()->getText('message_overlimit'), $pl_userLimit);
 	}
 	/* PostLimit mod */
 
