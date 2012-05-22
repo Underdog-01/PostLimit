@@ -35,8 +35,8 @@
 
 	db_extend('packages');
 
-	if (empty($context['uninstalling'])){
-
+	if (empty($context['uninstalling']))
+	{
 		$table = array(
 			'table_name' => 'post_limit',
 			'columns' => array(

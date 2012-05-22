@@ -134,6 +134,28 @@
 		</operation>
 	</file>
 
+	<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="replace"><![CDATA[// We'll do custom fields after as then we get to use the helper function!]]></search>
+			<add><![CDATA[/* PostLimit mod */
+	if (PostLimit::tools()->enable('enable'))
+	{
+		$pl_postLimit = new PostLimit($memberID);
+
+		/* Create a new row for this member */
+		$pl_data = array(
+					'user' => $memberID,
+					'limit' => 0,
+					'boards' => ''
+				);
+		$pl_postLimit->createRow($pl_data);
+	}
+	/* PostLimit mod */
+
+	// We'll do custom fields after as then we get to use the helper function!]]></add>
+		</operation>
+	</file>
+
 	<file name="$sourcedir/ScheduledTasks.php">
 		<operation>
 			<search position="replace"><![CDATA[// Perform the standard checks on expiring/near expiring subscriptions.]]></search>
