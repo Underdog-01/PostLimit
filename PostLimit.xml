@@ -170,6 +170,10 @@ function scheduled_postLimit()
 		array()
 	);
 
+	/* Kill the cache, we don't need it... */
+	$pl_postLimit = new PostLimit(1);
+	$pl_postLimit->killCache();
+
 	return true;
 }
 
