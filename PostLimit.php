@@ -92,7 +92,8 @@ class PostLimit
 
 	protected function getValue($row)
 	{
-		$return = $this->getAll();
+		/* ->getall() will return false if no row was found, we need to check for it before passing it to array_key_exists */
+		$return = $this->getAll() == false ? array() : $this->getAll();
 
 		if (empty($row) || !in_array($row, $this->_rows) || !array_key_exists($this->_user, $return))
 			return false;
