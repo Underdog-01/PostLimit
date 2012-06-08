@@ -4,7 +4,7 @@
  * Post Limit mod (SMF)
  *
  * @package SMF
- * @author Suki <missallsunday[at]simplemachines.org>
+ * @author Suki <missallsunday@simplemachines.org>
  * @copyright 2011 Suki http://missallsunday.com
  * @license http://www.mozilla.org/MPL/ MPL 2.0
  *

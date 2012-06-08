@@ -4,7 +4,7 @@
  * Post Limit mod (SMF)
  *
  * @package SMF
- * @author Suki <missallsunday[at]simplemachines.org>
+ * @author Suki <missallsunday@simplemachines.org>
  * @copyright 2012 Jessica González
  * @license http://www.mozilla.org/MPL/ MPL 2.0
  *
@@ -262,7 +262,7 @@ class PostLimit
 				'file' => 'PostLimit.php',
 				'function' => 'wrapper_profile_page',
 				'permission' => array(
-					'own' => 'PostLimit_can_set_post_limit',
+					'own' => 'profile_view_own',
 					'any' => 'PostLimit_can_set_post_limit',
 				),
 			);
