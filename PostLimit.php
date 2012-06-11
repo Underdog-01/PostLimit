@@ -59,6 +59,7 @@ class PostLimit
 			'post_limit' => 'post_limit',
 			'id_boards' => 'id_boards'
 		);
+		$this->_data['user'] = $this->_user;
 	}
 
 	public function killCache()
@@ -152,6 +153,7 @@ class PostLimit
 	{
 		/* Update! */
 		$this->_params['set'] = 'post_count = post_count + 1';
+		$this->_params['where'] = 'id_user = {int:user}';
 		$this->_db->params($this->_params, $this->_data);
 		$this->_db->updateData();
 
@@ -163,6 +165,7 @@ class PostLimit
 	{
 		/* Update! */
 		$this->_params['set'] = 'post_limit = {int:limit}, id_boards = {string:boards}';
+		$this->_params['where'] = 'id_user = {int:user}';
 		$this->_data['limit'] = $data['limit'];
 		$this->_data['boards'] = $data['boards'];
 
