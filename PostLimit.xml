@@ -81,10 +81,9 @@
 			$topic = $topicOptions['id'];
 
 		/* Post Limit mod */
-		if (PostLimit::tools()->enable('enable') && !$user_info['is_guest'])
-		{
-			$pl_postLimit =  new PostLimit($user_info['id']);
+		$pl_postLimit =  new PostLimit($user_info['id'], $board);
 
+		if (!$user_info['is_guest'] && $pl_postLimit->isBoardLimited() || ($pl_postLimit->getBoards() == false && $pl_postLimit->getLimit() >= 1 && PostLimit::tools()->enable('enable_global_limit')))
 			if ($pl_postLimit->rowExists())
 				$pl_postLimit->updateCount();
 		}]]></add>
