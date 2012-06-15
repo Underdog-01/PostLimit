@@ -265,7 +265,7 @@ class PostLimit
 				'file' => 'PostLimit.php',
 				'function' => 'wrapper_profile_page',
 				'permission' => array(
-					'own' => 'profile_view_own',
+					'own' => 'PostLimit_can_set_post_limit',
 					'any' => 'PostLimit_can_set_post_limit',
 				),
 			);

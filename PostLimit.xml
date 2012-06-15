@@ -85,8 +85,7 @@
 
 		if (!$user_info['is_guest'] && $pl_postLimit->isBoardLimited() || ($pl_postLimit->getBoards() == false && $pl_postLimit->getLimit() >= 1 && PostLimit::tools()->enable('enable_global_limit')))
 			if ($pl_postLimit->rowExists())
-				$pl_postLimit->updateCount();
-		}]]></add>
+				$pl_postLimit->updateCount();]]></add>
 		</operation>
 	</file>
 
