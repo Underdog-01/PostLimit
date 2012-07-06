@@ -37,7 +37,7 @@ $txt['PostLimit_enable_global_limit'] = 'Enable the global limit';
 $txt['PostLimit_enable_global_limit_sub'] = 'If this setting is on, users with a post limit and no boards specified will be limited on all boards.';
 $txt['PostLimit_enable_sub'] = 'This Setting must be on for the mod to work properly.';
 $txt['PostLimit_custom_message'] = 'Put your custom message here';
-$txt['PostLimit_custom_message_sub'] = 'Write the custom message the user will see, you can use {username} and {limit} to personalize the message even more<br />- {username} will display the nick of the user who will receive the message<br />- {limit} will display the amount of messages this particular user can made.<br /> If you leave this message empty, the default message will appear: '. $txt['PostLimit_message_default'] .'';
+$txt['PostLimit_custom_message_sub'] = 'Write the custom message the user will see, you can use {username} and {limit} to personalize the message even more<br />- {username} will display the nick of the user who will receive the message<br />- {limit} will display the amount of messages this particular user can make.<br /> If you leave this message empty, the default message will appear: '. $txt['PostLimit_message_default'] .'';
 $txt['PostLimit_profile_panel'] = 'Post Limit profile panel';
 
 /* Messages */

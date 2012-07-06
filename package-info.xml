@@ -7,7 +7,7 @@
 	<type>modification</type>
 
 	<install for="2.0 - 2.0.99">
-	<readme parsebbc="true"></readme>
+	<readme parsebbc="true">readme.txt</readme>
 		<database>install.php</database>
 		<code>hooks.php</code>
 		<modification>PostLimit.xml</modification>

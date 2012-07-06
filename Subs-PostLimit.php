@@ -30,7 +30,6 @@ if (!defined('SMF'))
 
 class PostLimitDB
 {
-
 	function __construct($table)
 	{
 		$this->table = isset($table) ? '{db_prefix}'.$table : null;
