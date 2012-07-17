@@ -188,7 +188,7 @@ class PostLimitTools
 	{
 		if (!self::$_instance)
 		{
-			self::$_instance = new PostLimitTools();
+			self::$_instance = new self();
 		}
 		return self::$_instance;
 	}
@@ -200,34 +200,29 @@ class PostLimitTools
 		loadLanguage('PostLimit');
 
 		$this->pattern = '/PostLimit_/';
+		$this->matchesSettings = array();
 
 		/* Get only the settings that we need */
-		if (($this->_settings = cache_get_data(PostLimit::$name':settings', 360)) == null)
-		{
-			foreach ($modSettings as $km => $vm)
-				if (preg_match($this->pattern, $km))
-				{
-					$km = $this->replace($km);
+		foreach ($modSettings as $km => $vm)
+			if (preg_match($this->pattern, $km))
+			{
+				$km = str_replace('PostLimit_', '', $km);
 
-					/* Populate the new array */
-					$this->_settings[$km] = $vm;
-				}
+				/* Populate the new array */
+				$this->matchesSettings[$km] = $vm;
+			}
 
-			cache_put_data(PostLimit::$name':settings', $this->_settings, 360);
-		}
+		$this->_settings = $this->matchesSettings;
 
 		/* Again, this time for $txt. */
-		if (($this->_text = cache_get_data(PostLimit::$name':text', 360)) == null)
-		{
-			foreach ($txt as $kt => $vt)
-				if (preg_match($this->pattern, $kt))
-				{
-					$kt = $this->replace($kt);
-					$this->_text[$kt] = $vt;
-				}
+		foreach ($txt as $kt => $vt)
+			if (preg_match($this->pattern, $kt))
+			{
+				$kt = str_replace('PostLimit_', '', $kt);
+				$this->matchesText[$kt] = $vt;
+			}
 
-			cache_put_data(PostLimit::$name':text', $this->_settings, 360);
-		}
+		$this->_text = $this->matchesText;
 
 		/* Done? then we don't need this anymore */
 		if (!empty($this->_text) && !empty($this->_settings))
@@ -235,11 +230,6 @@ class PostLimitTools
 			unset($this->matchesText);
 			unset($this->matchesSettings);
 		}
-	}
-
-	private function replace($var)
-	{
-		return $var = str_replace('PostLimit_', '', $var);
 	}
 
 	/* Return true if the value do exist, false otherwise, O RLY? */
