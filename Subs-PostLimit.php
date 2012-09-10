@@ -175,90 +175,108 @@ class PostLimitDB
 
 class PostLimitTools
 {
-	private static $_instance;
-	private $_settings;
-	private $_text;
+	protected static $_instance;
+	protected $_settings;
+	protected $_text;
+	protected $_name = 'PostLimit';
 
-	private function __construct()
+	/**
+	 * Initialize the extract() method and sets the pattern property using $_name's value.
+	 *
+	 * @access protected
+	 * @return void
+	 */
+	protected function __construct()
 	{
-		$this->doExtract();
+		/* Set the pattern property with $_name's value */
+		$this->_pattern = '/'. $this->_name .'_/';
+
+		/* Extract the requested values from the arrays */
+		$this->extract();
 	}
 
+	/**
+	 * Set's a unique instance for the class.
+	 *
+	 * @access public
+	 * @return object
+	 */
 	public static function getInstance()
 	{
 		if (!self::$_instance)
-		{
-			self::$_instance = new PostLimitTools();
-		}
+			self::$_instance = new self();
+
 		return self::$_instance;
 	}
 
-	public function doExtract()
+	/**
+	 * Extracts the requested values form the $modSettings and txt arrays, sets $_text and $_settings with the founded data.
+	 *
+	 * @global array $modSettings SMF's modSettings variable
+	 * @global array $txt SMF's text strings
+	 * @access public
+	 * @return void
+	 */
+	public function extract()
 	{
-		global $txt, $modSettings;
+		global $modSettings, $txt;
 
-		loadLanguage('PostLimit');
+		/* Load the mod's language file */
+		loadLanguage($this->_name);
 
-		$this->pattern = '/PostLimit_/';
-		$this->matchesSettings = array();
+		$this->_settings = $modSettings;
 
-		/* Get only the settings that we need */
-		foreach ($modSettings as $km => $vm)
-			if (preg_match($this->pattern, $km))
-			{
-				$km = str_replace('PostLimit_', '', $km);
-
-				/* Populate the new array */
-				$this->matchesSettings[$km] = $vm;
-			}
-
-		$this->_settings = $this->matchesSettings;
-
-		/* Again, this time for $txt. */
-		foreach ($txt as $kt => $vt)
-			if (preg_match($this->pattern, $kt))
-			{
-				$kt = str_replace('PostLimit_', '', $kt);
-				$this->matchesText[$kt] = $vt;
-			}
-
-		$this->_text = $this->matchesText;
-
-		/* Done? then we don't need this anymore */
-		if (!empty($this->_text) && !empty($this->_settings))
-		{
-			unset($this->matchesText);
-			unset($this->matchesSettings);
-		}
+		$this->_text = $txt;
 	}
 
-	/* Return true if the value do exist, false otherwise, O RLY? */
+	/**
+	 * Return true if the param value do exists on the $_settings array, false otherwise.
+	 *
+	 * @param string the name of the key
+	 * @access public
+	 * @return bool
+	 */
 	public function enable($var)
 	{
-		if (!empty($this->_settings[$var]))
+		if (!empty($this->_settings[$this->_name .'_'. $var]))
 			return true;
+
 		else
 			return false;
 	}
 
-	/* Get the requested setting  */
+	/**
+	 * Get the requested array element.
+	 *
+	 * @param string the key name for the requested element
+	 * @access public
+	 * @return mixed
+	 */
 	public function getSetting($var)
 	{
-		if (!empty($this->_settings[$var]))
-			return $this->_settings[$var];
+		if (empty($var))
+			return false;
+
+		elseif (!empty($this->_settings[$this->_name .'_'. $var]))
+			return $this->_settings[$this->_name .'_'. $var];
 
 		else
 			return false;
 	}
 
+	/**
+	 * Get the requested array element.
+	 *
+	 * @param string the key name for the requested element
+	 * @access public
+	 * @return mixed
+	 */
 	public function getText($var)
 	{
-		if (!empty($this->_text[$var]))
-			return $this->_text[$var];
+		if (!empty($this->_text[$this->_name .'_'. $var]))
+			return $this->_text[$this->_name .'_'. $var];
 
 		else
 			return false;
 	}
-
-	public function __destruct() {}
 }
