@@ -404,9 +404,6 @@ class PostLimit
 		{
 			checkSession();
 
-			/* Force a new instance */
-			self::tools()->__destruct();
-
 			saveDBSettings($config_vars);
 			redirectexit('action=admin;area=postlimit;sa=basic');
 		}
