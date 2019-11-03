@@ -8,7 +8,7 @@
  * @copyright 2011 Suki http://missallsunday.com
  * @license http://www.mozilla.org/MPL/ MPL 2.0
  *
- * @version 1.0
+ * @version 1.1
  */
 
 /*

@@ -5,10 +5,10 @@
  *
  * @package SMF
  * @author Suki <missallsunday@simplemachines.org>
- * @copyright 2012 Jessica Gonz�lez
+ * @copyright 2019 Jessica González
  * @license http://www.mozilla.org/MPL/ MPL 2.0
  *
- * @version 1.0
+ * @version 1.1
  */
 
 /*
