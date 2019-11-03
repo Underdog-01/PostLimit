@@ -11,11 +11,9 @@
  * @version 1.1
  */
 
-if (!defined('SMF')) {
-    die('Hacking attempt...');
-}
+declare(strict_types=1);
 
-class PostLimitDB
+class PostLimit
 {
     public function __construct($table)
     {

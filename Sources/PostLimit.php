@@ -11,23 +11,6 @@
  * @version 1.1
  */
 
-if (!defined('SMF')) {
-    die('Hacking attempt...');
-}
-
-/* Wrapper functions */
-function wrapper_admin_dispatch()
-{
-    PostLimit::settingsDispatch();
-}
-function wrapper_admin_settings()
-{
-    PostLimit::settings();
-}
-function wrapper_profile_page()
-{
-    PostLimit::profilePage();
-}
 
 class PostLimit
 {
