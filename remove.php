@@ -25,23 +25,25 @@
  *
  */
 
-	if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
-		require_once(dirname(__FILE__) . '/SSI.php');
-	elseif (!defined('SMF'))
-		exit('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
+    if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF')) {
+        require_once(dirname(__FILE__) . '/SSI.php');
+    } elseif (!defined('SMF')) {
+        exit('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
+    }
 
-	$hooks = array(
-		'integrate_pre_include' => '$sourcedir/PostLimit.php',
-		'integrate_admin_areas' => 'wrapper_post_limit_admin',
-		'integrate_load_permissions' => 'PostLimit::permissions',
-		'integrate_admin_areas' => 'PostLimit::admin',
-		'integrate_profile_areas' => 'PostLimit::profileHook'
-	);
+    $hooks = array(
+        'integrate_pre_include' => '$sourcedir/PostLimit.php',
+        'integrate_admin_areas' => 'wrapper_post_limit_admin',
+        'integrate_load_permissions' => 'PostLimit::permissions',
+        'integrate_admin_areas' => 'PostLimit::admin',
+        'integrate_profile_areas' => 'PostLimit::profileHook'
+    );
 
-		$call = 'remove_integration_function';
+        $call = 'remove_integration_function';
 
-	foreach ($hooks as $hook => $function)
-		$call($hook, $function);
+    foreach ($hooks as $hook => $function) {
+        $call($hook, $function);
+    }
 
-	/* Dont forget to remove the scheduled task... */
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}scheduled_tasks WHERE task LIKE 'postLimit'");
+    /* Dont forget to remove the scheduled task... */
+    $smcFunc['db_query']('', "DELETE FROM {db_prefix}scheduled_tasks WHERE task LIKE 'postLimit'");

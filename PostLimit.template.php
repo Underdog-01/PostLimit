@@ -25,15 +25,16 @@
  *
  */
 
-if (!defined('SMF'))
-	die('Hacking attempt...');
+if (!defined('SMF')) {
+    die('Hacking attempt...');
+}
 
 function template_postLimit_profile_page()
 {
-	global $txt, $context, $scripturl;
+    global $txt, $context, $scripturl;
 
-	if (!empty($context['postLimit']['cannot']))
-		echo '
+    if (!empty($context['postLimit']['cannot'])) {
+        echo '
 				<span class="clear upperframe">
 					<span></span>
 				</span>
@@ -47,9 +48,8 @@ function template_postLimit_profile_page()
 				<span class="lowerframe">
 					<span></span>
 				</span><br />';
-	else
-	{
-				echo '
+    } else {
+        echo '
 				<div class="cat_bar">
 					<h3 class="catbg">
 						<span class="ie6_header floatleft">
@@ -58,15 +58,15 @@ function template_postLimit_profile_page()
 					</h3>
 				</div>';
 
-				echo '
+        echo '
 				<span class="clear upperframe">
 					<span></span>
 				</span>
 				<div class="roundframe rfix">
 					<div class="innerframe">';
 
-				/* Form */
-				echo '<form action="', $scripturl , '?action=profile;area=userlimit;u=', $context['member']['id'] ,';save" method="post" target="_self" id="postmodify" class="flow_hidden" onsubmit="submitonce(this);" >
+        /* Form */
+        echo '<form action="', $scripturl , '?action=profile;area=userlimit;u=', $context['member']['id'] ,';save" method="post" target="_self" id="postmodify" class="flow_hidden" onsubmit="submitonce(this);" >
 						<dl id="post_header">
 							<dt>
 								<span id="caption_subject">', $txt['PostLimit_profile_userlimit'] ,'</span>
@@ -88,11 +88,11 @@ function template_postLimit_profile_page()
 						<input type="submit" name="send" class="sbtn" value="', $txt['PostLimit_profile_save'] ,'" />
 					</div>';
 
-				echo '
+        echo '
 					</div>
 				</div>
 				<span class="lowerframe">
 					<span></span>
 				</span><br />';
-	}
+    }
 }

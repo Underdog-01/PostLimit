@@ -5,7 +5,7 @@
  *
  * @package SMF
  * @author Suki <missallsunday@simplemachines.org>
- * @copyright 2012 Jessica González
+ * @copyright 2012 Jessica Gonzï¿½lez
  * @license http://www.mozilla.org/MPL/ MPL 2.0
  *
  * @version 1.0

@@ -25,82 +25,83 @@
  *
  */
 
-	if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
-		require_once(dirname(__FILE__) . '/SSI.php');
+    if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF')) {
+        require_once(dirname(__FILE__) . '/SSI.php');
+    } elseif (!defined('SMF')) {
+        exit('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
+    }
 
-	elseif (!defined('SMF'))
-		exit('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
+    global $smcFunc, $context, $db_prefix;
 
-	global $smcFunc, $context, $db_prefix;
+    /* Sorry! */
+    PostLimitCheck();
 
-	/* Sorry! */
-	PostLimitCheck();
+    db_extend('packages');
 
-	db_extend('packages');
+    if (empty($context['uninstalling'])) {
+        $table = array(
+            'table_name' => 'post_limit',
+            'columns' => array(
+                array(
+                    'name' => 'id_user',
+                    'type' => 'int',
+                    'size' => 5,
+                    'null' => false,
+                ),
+                array(
+                    'name' => 'id_boards',
+                    'type' => 'varchar',
+                    'size' => 255,
+                    'default' => '',
+                ),
+                array(
+                    'name' => 'post_limit',
+                    'type' => 'int',
+                    'size' => 5,
+                    'null' => false,
+                ),
+                array(
+                    'name' => 'post_count',
+                    'type' => 'int',
+                    'size' => 5,
+                    'null' => false,
+                ),
+            ),
+            'indexes' => array(
+                array(
+                    'type' => 'primary',
+                    'columns' => array('id_user')
+                ),
+            ),
+            'if_exists' => 'ignore',
+            'error' => 'fatal',
+            'parameters' => array(),
+        );
 
-	if (empty($context['uninstalling']))
-	{
-		$table = array(
-			'table_name' => 'post_limit',
-			'columns' => array(
-				array(
-					'name' => 'id_user',
-					'type' => 'int',
-					'size' => 5,
-					'null' => false,
-				),
-				array(
-					'name' => 'id_boards',
-					'type' => 'varchar',
-					'size' => 255,
-					'default' => '',
-				),
-				array(
-					'name' => 'post_limit',
-					'type' => 'int',
-					'size' => 5,
-					'null' => false,
-				),
-				array(
-					'name' => 'post_count',
-					'type' => 'int',
-					'size' => 5,
-					'null' => false,
-				),
-			),
-			'indexes' => array(
-				array(
-					'type' => 'primary',
-					'columns' => array('id_user')
-				),
-			),
-			'if_exists' => 'ignore',
-			'error' => 'fatal',
-			'parameters' => array(),
-		);
+        $smcFunc['db_create_table']($db_prefix . $table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
 
-		$smcFunc['db_create_table']($db_prefix . $table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
+        /* Add the Scheduled Task */
+        $smcFunc['db_insert'](
+            'ignore',
+            '{db_prefix}scheduled_tasks',
+            array(
+                'id_task' => 'int',
+                'next_time' => 'int',
+                'time_offset' => 'int',
+                'time_regularity' => 'int',
+                'time_unit' => 'string',
+                'disabled' => 'int',
+                'task' => 'string',
+            ),
+            array(0,0,0,1,'d',0,'postLimit'
+            ),
+            array('task')
+        );
+    }
 
-		/* Add the Scheduled Task */
-		$smcFunc['db_insert']('ignore',
-			'{db_prefix}scheduled_tasks',
-			array(
-				'id_task' => 'int',
-				'next_time' => 'int',
-				'time_offset' => 'int',
-				'time_regularity' => 'int',
-				'time_unit' => 'string',
-				'disabled' => 'int',
-				'task' => 'string',
-			),
-			array(0,0,0,1,'d',0,'postLimit'
-			),
-			array('task')
-		);
-	}
-
-	function PostLimitCheck()
-	{
-		if (version_compare(PHP_VERSION, '5.2.0', '<'))
-			fatal_error('This mod needs PHP 5.2 or greater. You will not be able to install/use this mod, contact your host and ask for a php upgrade.');
-	}
+    function PostLimitCheck()
+    {
+        if (version_compare(PHP_VERSION, '5.2.0', '<')) {
+            fatal_error('This mod needs PHP 5.2 or greater. You will not be able to install/use this mod, contact your host and ask for a php upgrade.');
+        }
+    }
