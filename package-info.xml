@@ -19,19 +19,35 @@
 		<database>install.php</database>
 		<code>hooks.php</code>
 		<modification>PostLimit.xml</modification>
-		<require-file name="PostLimit.php" destination="$sourcedir">Source file</require-file>
-		<require-file name="Subs-PostLimit.php" destination="$sourcedir">Source file</require-file>
-		<require-file name="PostLimit.english.php" destination="$languagedir">Language file</require-file>
-		<require-file name="PostLimit.template.php" destination="$themedir">Template file</require-file>
+		<require-dir name="Themes" destination="$boarddir">Theme files</require-dir>
+		<require-dir name="Sources/PostLimit" destination="$sourcedir">Source files</require-dir>
+		<hook hook="integrate_admin_areas" function="$sourcedir/PostLimit/PostLimitAdmin.php|\PostLimit\PostLimitAdmin::menu#" />
+		<hook hook="integrate_load_permissions" function="$sourcedir/PostLimit/PostLimitAdmin.php|\PostLimit\PostLimitAdmin::permissions#" />
+		<hook hook="integrate_pre_include" file="$sourcedir/PostLimit/PostLimit.php" />
+		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimitAdmin::permissions#" />
+		<hook hook="integrate_post_start" function="\PostLimit\PostLimit::handle#" />
+		<hook hook="integrate_post2_start" function="\PostLimit\PostLimit::handle#" />
+		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::updateCount#" />
+<!--		@Todo: Toy with template layers to display a notification on how many posts until reaching the post limit-->
+		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" />
 		<redirect url="$scripturl?action=admin;area=postlimit" timeout="3000"></redirect>
 	</install>
 
 	<uninstall for="2.0 - 2.0.99">
-		<code>remove.php</code>
+		<hook hook="integrate_admin_areas" function="$sourcedir/PostLimit/PostLimitAdmin.php|\PostLimit\PostLimitAdmin::menu#" reverse="true"/>
+		<hook hook="integrate_load_permissions" function="$sourcedir/PostLimit/PostLimitAdmin.php|\PostLimit\PostLimitAdmin::permissions#" reverse="true"/>
+		<hook hook="integrate_pre_include" file="$sourcedir/PostLimit/PostLimit.php" reverse="true"/>
+		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimitAdmin::permissions#" reverse="true"/>
+		<hook hook="integrate_post_start" function="\PostLimit\PostLimit::handle#" reverse="true"/>
+		<hook hook="integrate_post2_start" function="\PostLimit\PostLimit::handle#" reverse="true"/>
+		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::updateCount#" reverse="true"/>
 		<database>install.php</database>
+		<remove-dir name="$sourcedir/AutoRespond" />
+
+
 		<modification reverse="true">PostLimit.xml</modification>
-		<remove-file name="$sourcedir/PostLimit.php" />
-		<remove-file name="$sourcedir/Subs-PostLimit.php" />
+		<remove-dir name="$sourcedir/PostLimit" />
+		<remove-file name="$sourcedir/tasks/PostLimit.php" />
 		<remove-file name="$languagedir/PostLimit.english.php" />
 		<remove-file name="$themedir/PostLimit.template.php" />
 	</uninstall>
