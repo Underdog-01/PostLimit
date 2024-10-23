@@ -1,0 +1,25 @@
+{
+  "name": "suki/post-limit",
+  "description": "SMF modification for setting a per user post limit",
+  "type": "smf-module",
+  "license": "MPL-2.0",
+  "authors": [
+    {
+      "name": "Michel Mendiola",
+      "email": "suki@missallsunday.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "AutoRespond\\": "Sources/PostLimit/"
+    }
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.4",
+    "ext-ctype": "*"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "2.0.x-dev"
+  }
+}
