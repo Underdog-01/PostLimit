@@ -11,15 +11,12 @@
   ],
   "autoload": {
     "psr-4": {
-      "AutoRespond\\": "Sources/PostLimit/"
+      "PostLimit\\": "Sources/PostLimit/"
     }
   },
   "minimum-stability": "dev",
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.0",
     "ext-ctype": "*"
-  },
-  "require-dev": {
-    "phpstan/phpstan": "2.0.x-dev"
   }
 }
