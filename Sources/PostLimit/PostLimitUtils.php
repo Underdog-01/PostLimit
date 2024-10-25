@@ -40,6 +40,11 @@ class PostLimitUtils
         return $var;
     }
 
+    public function request(string $key)
+    {
+        return isset($_REQUEST[$key]) ? $this->sanitize($_REQUEST[$key]) : null;
+    }
+
     public function text(string $textKey = ''): string
     {
         global $txt;

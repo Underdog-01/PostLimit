@@ -16,46 +16,93 @@ namespace PostLimit;
 
 class PostLimitAdmin
 {
-    public function __construct(protected PostLimitService $service, protected PostLimitUtils $utils)
-    {
+    public const ACTIONS = [
+        'settings',
+    ];
+    public const URL = 'action=admin;area=postlimit';
+    protected PostLimitService $service;
+    protected PostLimitUtils $utils;
 
+    public function __construct(PostLimitService $service, PostLimitUtils $utils)
+    {
+        $this->utils = $utils;
+        $this->service = $service;
     }
 
     public function menu(&$admin_areas): void
     {
-        global $txt;
-
         $this->loadRequiredFiles();
 
-        $admin_areas['config']['areas']['autorespond'] = [
-            'label' => $txt['AR_menu'],
+        $admin_areas['config']['areas'][strtolower(PostLimit::NAME)] = array(
+            'label' => $this->utils->text('admin_panel'),
             'function' => [$this, 'main'],
             'icon' => 'posts.gif',
             'subsections' => [
-                'settings' => [$txt['AR_admin_settings']],
-                'list' => [$txt['AR_admin_list']],
-                'add' => [$txt['AR_admin_add']],
+                'general' => [$this->utils->text('admin_panel_settings')],
             ],
-        ];
+        );
     }
 
     public function main(): void
     {
-        global $txt, $context;
+        global $context;
 
         $context[$context['admin_menu_name']]['tab_data'] = [
-            'title' => $txt['AR_admin_panel'],
-            'description' => $txt['AR_admin_panel_desc'],
+            'title' => $this->utils->text('admin_panel'),
+            'description' => $this->utils->text('admin_panel_desc'),
             'tabs' => [
                 self::ACTIONS[0] => []
             ],
         ];
 
-        $action = isset($_REQUEST['sa']) && in_array($_REQUEST['sa'], self::ACTIONS, true) ?
-            $this->service->sanitize($_REQUEST['sa']) : self::ACTIONS[0];
+        $action = $this->utils->request('sa');
+        $action = $action && in_array($action, self::ACTIONS, true) ?
+        $action : self::ACTIONS[0];
 
         $this->setContext($action);
         $this->{$action}();
+    }
+
+    public function settings(): void
+    {
+        $config_vars = [
+            ['check', PostLimit::NAME . '_enable','subtext' => $this->utils->text('enable_sub')],
+            ['large_text', PostLimit::NAME . '_custom_message', 'subtext' => $this->utils->text('custom_message_sub')],
+            ['check', PostLimit::NAME . '_enable_global_limit','subtext' => $this->utils->text('enable_global_limit_sub')],
+        ];
+
+        if ($this->utils->request('save'))
+        {
+            checkSession();
+            saveDBSettings($config_vars);
+            redirectexit(self::URL);
+        }
+
+        prepareDBSettingContext($config_vars);
+    }
+
+    public function permissions(&$permissionGroups, &$permissionList)
+    {
+        $simple = PostLimit::NAME . '_per_simple';
+        $classic = PostLimit::NAME . '_per_classic';
+
+        $permissionList['membergroup'][PostLimit::NAME . '_can_set_post_limit'] = [
+            false,
+            $classic,
+            $simple
+        ];
+        $permissionGroups['membergroup']['simple'] = [$simple];
+        $permissionGroups['membergroup']['classic'] = [$classic];
+    }
+
+    protected function setContext(string $action): void
+    {
+        global $context, $scripturl, $txt;
+
+        $context['sub_action'] = $action;
+        $context['page_title'] = $this->utils->text('admin_' . $action);
+        $context['post_url'] = $scripturl . '?' . self::URL .';save';
+        $context['settings_title'] = $context['page_title'];
     }
 
     protected function loadRequiredFiles(): void
@@ -64,8 +111,8 @@ class PostLimitAdmin
 
         isAllowedTo('admin_forum');
 
-        loadLanguage('AutoRespond');
-        loadtemplate('AutoRespond');
+        loadLanguage(PostLimit::NAME);
+        loadtemplate(PostLimit::NAME);
 
         require_once($sourcedir . '/ManageSettings.php');
         require_once($sourcedir . '/ManageServer.php');
