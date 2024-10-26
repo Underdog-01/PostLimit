@@ -32,15 +32,23 @@ class PostLimit
 
     public function handle(): void
     {
+        global $board, $user_info;
+
+        $userId = (int) $user_info['id'];
+
         if (!$this->service->isEnable()){
             return;
         }
 
+        $postLimit = $this->service->getEntityByUser($userId);
+        $limit = $postLimit->getPostLimit();
+        $boards = $postLimit->getIdBoards();
 
-        /* PostLimit mod */
-        if (PostLimit::tools()->enable('enable') && !$user_info['is_guest'])
+        if (!$this->service->isBoardLimited($board) || ($boards != false && $limit >= 1 && $this->service->isEnableGlobalLimit())) {
+            return;
+        }
+
         {
-            $pl_postLimit = new PostLimit($user_info['id'], $board_info['id']);
             $context['postLimit'] = array(
                 'message' => '',
                 'title' => ''
