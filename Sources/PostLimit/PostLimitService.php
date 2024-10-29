@@ -30,11 +30,23 @@ class PostLimitService
         $this->repository = $repository ?? new PostLimitRepository();
         $this->boardId = $board;
         $this->userId = (int) $user_info['user_id'];
+        $this->entity = $this->getEntityByUser();
     }
 
-    public function getEntityByUser(int $userId): PostLimitEntity
+    public function getEntityByUser(): ?PostLimitEntity
     {
-        return $this->repository->getByUser($userId);
+        $entity = $this->repository->getByUser($this->userId);
+        return $entity ?? $this->createDefaultEntity();
+    }
+
+    public function createDefaultEntity(): ?PostLimitEntity
+    {
+        return $this->repository->insert(new PostLimitEntity([
+            PostLimitEntity::ID_USER => $this->userId,
+            PostLimitEntity::ID_BOARDS => [],
+            PostLimitEntity::POST_LIMIT => $this->utils->setting('default_post_limit'),
+            PostLimitEntity::POST_COUNT => 0,
+        ]));
     }
 
     public function isEnable(): bool
@@ -44,28 +56,59 @@ class PostLimitService
         return !$user_info['is_guest'] || !$this->utils->setting('enable');
     }
 
-    public function isUserLimited(int $userId): bool
+    public function isUserLimited(): bool
     {
-        return !$this->isBoardLimited($board) || ($this->utils->setting('enable_global_limit'));
+        $limit = $this->entity->getPostLimit();
+        $boards = $this->entity->getIdBoards();
+
+        return $this->isBoardLimited() ||
+            ($boards != false && $limit >= 1 && $this->utils->setting('enable_global_limit'));
     }
 
-    public function isBoardLimited(int $boardId = 0): bool
+    public function isBoardLimited(): bool
     {
-        if (empty($boardId)) {
+        if (empty($this->boardId)) {
             return false;
         }
 
-        return in_array($boardId, $this->getBoards());
+        return in_array($this->boardId, $this->entity->getIdBoards());
     }
 
-    public function getBoards(): array
+    public function getNotificationContent(int $messagesLeftCount = 0): array
     {
-        global $sourcedir, $boards;
+        global $user_info;
 
-        require_once($sourcedir . '/Subs-Boards.php');
+       return [
+           'title' => sprintf($this->utils->text('message_title'), $user_info['name']),
+           'message' => sprintf($this->utils->text('message'), $messagesLeftCount)
+       ];
+    }
 
-        getBoardTree();
+    public function getFatalErrorMessage(): string
+    {
+        global $user_info;
 
-        return $boards;
+        $replacements = [
+            'username' => $user_info['name'],
+            'nameColor' => $user_info['name_color'],
+            'linkColor' => $user_info['link_color'],
+            'limit' => $this->entity->getPostLimit(),
+        ];
+
+        $find = $replace = [];
+
+        foreach ($replacements as $f => $r) {
+            $find[] = '{' . $f . '}';
+            $replace[] = $r;
+        }
+
+        $customMessage = $this->utils->setting('custom_message');
+
+        return str_replace($find, $replace, $customMessage ?? $this->utils->text('message_default'));
+    }
+
+    public function updateCount(): void
+    {
+        $this->repository->updateCount($this->userId);
     }
 }

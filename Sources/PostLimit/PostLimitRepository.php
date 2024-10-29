@@ -13,7 +13,7 @@ class PostLimitRepository
     {
         $this->db = $GLOBALS['smcFunc'];
     }
-    public function insert(PostLimitEntity $entity): int
+    public function insert(PostLimitEntity $entity): ?PostLimitEntity
     {
         $this->db['db_insert'](
             'insert',
@@ -23,7 +23,7 @@ class PostLimitRepository
             (array) PostLimitEntity::ID_USER
         );
 
-        return $this->getInsertedId();
+        return $this->getByUser($entity->getIdUser());
     }
 
     public function getByUser(int $userId): ?PostLimitEntity
@@ -58,6 +58,20 @@ class PostLimitRepository
 			FROM {db_prefix}' . PostLimitEntity::TABLE . '
 		    WHERE ' . $byKey . ' IN({array_int:ids})',
             ['ids' => $ids]
+        );
+    }
+
+    public function updateCount($userId): void
+    {
+        $this->db['db_query'](
+            '',
+            'UPDATE {db_prefix}' . PostLimitEntity::TABLE . '
+			SET post_count = post_count + 1
+			WHERE {raw:columnName} = {int:userId}',
+            [
+                'columnName' => PostLimitEntity::ID_USER,
+                'userId' => $userId
+            ]
         );
     }
 

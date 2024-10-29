@@ -17,6 +17,7 @@ namespace PostLimit;
 class PostLimit
 {
     public const NAME = 'PostLimit';
+    public const POST_LEFT_TO_SHOW_NOTIFICATION = 3;
     private PostLimitService $service;
 
     public function __construct(?PostLimitService $service = null)
@@ -32,54 +33,29 @@ class PostLimit
 
     public function handle(): void
     {
-        global $board, $user_info;
-
-        $userId = (int) $user_info['id'];
-
-        if (!$this->service->isEnable()){
+        if (!$this->service->isEnable() || !$this->service->isUserLimited()){
             return;
         }
 
-        $postLimit = $this->service->getEntityByUser($userId);
-        $limit = $postLimit->getPostLimit();
-        $boards = $postLimit->getIdBoards();
+        $entity = $this->service->getEntityByUser();
+        $postCount = $entity->getPostCount();
+        $limit = $entity->getPostLimit();
+        $messagesLeftCount = $limit - $postCount;
 
-        if (!$this->service->isBoardLimited($board) || ($boards != false && $limit >= 1 && $this->service->isEnableGlobalLimit())) {
+        if ($postCount < $limit && $messagesLeftCount <= self::POST_LEFT_TO_SHOW_NOTIFICATION) {
+            // @TODO: handle showing the notification on posting
+            $notification = $this->service->getNotificationContent($messagesLeftCount);
+
             return;
         }
 
-        {
-            $context['postLimit'] = array(
-                'message' => '',
-                'title' => ''
-            );
-
-            /* Is this board limited? or is this user under a global limit? */
-            if ($pl_postLimit->isBoardLimited() || ($pl_postLimit->getBoards() == false && $pl_postLimit->getLimit() >= 1 && PostLimit::tools()->enable('enable_global_limit')))
-            {
-                /* Get the user's post limit */
-                $pl_userLimit = $pl_postLimit->getLimit();
-
-                /* Get the user's current post count */
-                $pl_userCount = $pl_postLimit->getCount();
-
-                $context['postLimit']['title'] = sprintf(PostLimit::tools()->getText('message_title'), $user_info['name']);
-
-                /* Define what we are gonna do */
-                if ($pl_userCount < $pl_userLimit)
-                {
-                    /* Just how many messages are left? */
-                    $pl_messagesLeft = $pl_userLimit - $pl_userCount;
-
-                    if ($pl_messagesLeft <= 3)
-                        $context['postLimit']['message'] = sprintf(PostLimit::tools()->getText('message'), $pl_messagesLeft);
-                }
-
-                elseif ($pl_userCount >= $pl_userLimit)
-                    fatal_error($pl_postLimit->customMessage($user_info['name']), false);
-            }
+        if ($postCount >= $limit) {
+            fatal_error($this->service->getFatalErrorMessage(), false);
         }
-        /* PostLimit mod */
+    }
+
+    public function updateCount($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters): void
+    {
 
     }
 }

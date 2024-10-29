@@ -68,6 +68,8 @@ class PostLimitAdmin
         $config_vars = [
             ['check', PostLimit::NAME . '_enable','subtext' => $this->utils->text('enable_sub')],
             ['large_text', PostLimit::NAME . '_custom_message', 'subtext' => $this->utils->text('custom_message_sub')],
+            ['int', PostLimit::NAME . '_default_post_limit', 'subtext' => $this->utils->text('default_post_limit_sub')],
+            ['int', PostLimit::NAME . '_post_count_alert', 'subtext' => $this->utils->text('_post_count_alert_sub')],
             ['check', PostLimit::NAME . '_enable_global_limit','subtext' => $this->utils->text('enable_global_limit_sub')],
         ];
 
