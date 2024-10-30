@@ -90,7 +90,7 @@ class PostLimitEntity
         $this->postCount = $postCount;
     }
 
-    private function snakeToCamel(string $input): string
+    public function snakeToCamel(string $input): string
     {
         return \lcfirst(\str_replace('_', '', \ucwords($input, '_')));
     }

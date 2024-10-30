@@ -33,16 +33,16 @@ class PostLimitService
         $this->entity = $this->getEntityByUser();
     }
 
-    public function getEntityByUser(): ?PostLimitEntity
+    public function getEntityByUser(?int $userId = null): ?PostLimitEntity
     {
-        $entity = $this->repository->getByUser($this->userId);
+        $entity = $this->repository->getByUser($userId ?? $this->userId);
         return $entity ?? $this->createDefaultEntity();
     }
 
-    public function createDefaultEntity(): ?PostLimitEntity
+    public function createDefaultEntity(?int $userId = null): ?PostLimitEntity
     {
         return $this->repository->insert(new PostLimitEntity([
-            PostLimitEntity::ID_USER => $this->userId,
+            PostLimitEntity::ID_USER => $userId ?? $this->userId,
             PostLimitEntity::ID_BOARDS => [],
             PostLimitEntity::POST_LIMIT => $this->utils->setting('default_post_limit'),
             PostLimitEntity::POST_COUNT => 0,
@@ -107,8 +107,74 @@ class PostLimitService
         return str_replace($find, $replace, $customMessage ?? $this->utils->text('message_default'));
     }
 
-    public function updateCount(): void
+    public function updateCount(int $userId = 0): void
     {
-        $this->repository->updateCount($this->userId);
+        $this->repository->updateCount($userId ?? $this->userId);
+    }
+
+    protected function checkSeeProfilePage(): void
+    {
+        global $context;
+
+        $message = '';
+
+        if (!allowedTo(PostLimit::NAME . '_can_set_post_limit')) {
+            $message = $this->utils->text('message_cannot');
+        } elseif ($context['member']['group_id'] == 1) {
+            $message = $this->utils->text('message_cannot_admin');
+        } elseif ($context['user']['is_owner']) {
+            $message = $this->utils->text('message_cannot_own');
+        }
+
+        if (!empty($message)) {
+            fatal_lang_error($message, true);
+        }
+    }
+
+    protected function setTemplate(): void
+    {
+        global $context, $txt, $user_info, $scripturl;
+
+        loadtemplate(PostLimit::NAME);
+
+        $context['sub_template'] = 'postLimit_profile_page';
+        $context += [
+            'page_title' => sprintf($txt['profile_of_username'], $context['member']['name']),
+        ];
+        $context['user']['is_owner'] = $context['member']['id'] == $user_info['id'];
+        $context['canonical_url'] = $scripturl . '?action=profile;u=' . $context['member']['id'];
+    }
+
+    public function profilePage(): void
+    {
+        global $context;
+
+        $this->checkSeeProfilePage();
+        $this->setTemplate();
+
+        $postLimit = $this->getEntityByUser((int) $context['member']['id']);
+
+        $context[PostLimit::NAME] = $postLimit->toArray();
+
+        if ($this->utils->request('save')) {
+            checkSession();
+
+            if (!$this->utils->request(PostLimitEntity::POST_LIMIT)) {
+                return;
+            }
+
+            $postLimit->setIdBoards(explode(',',
+                preg_replace('/[^0-9,]/',
+                    '', $this->utils->request(PostLimitEntity::ID_BOARDS))
+            ));
+
+            $postLimit->setPostLimit($this->utils->request(PostLimitEntity::POST_LIMIT));
+            $postLimit->setPostCount(0);
+            $postLimit->setIdUser($context['member']['id']);
+
+            $this->repository->update($postLimit);
+
+            redirectexit('action=profile;area='. strtolower(PostLimit::NAME) .';u='. $context['member']['id']);
+        }
     }
 }

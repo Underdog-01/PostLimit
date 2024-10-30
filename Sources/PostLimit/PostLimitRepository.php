@@ -26,6 +26,41 @@ class PostLimitRepository
         return $this->getByUser($entity->getIdUser());
     }
 
+    public function update(PostLimitEntity $entity): void
+    {
+        $this->db['db_query'](
+            '',
+            'UPDATE {db_prefix}' . PostLimitEntity::TABLE . '
+			'. $this->buildSetUpdate($entity) .'
+			WHERE {raw:columnName} = {int:userId}',
+            $this->buildParams([
+                'columnName' => PostLimitEntity::ID_USER,
+                'userId' => $entity->getIdUser()
+            ], $entity)
+        );
+    }
+
+    protected function buildParams(array $params, PostLimitEntity $entity): array
+    {
+        $entityAsArray = $entity->toArray();
+
+        foreach (PostLimitEntity::COLUMNS as $name => $type) {
+            $params[$name] = $entityAsArray[$entity->snakeToCamel($name)];
+        }
+
+        return $params;
+    }
+
+    protected function buildSetUpdate(PostLimitEntity $entity): string
+    {
+        $set = 'SET ';
+        foreach (PostLimitEntity::COLUMNS as $name => $type) {
+            $set .= $name . ' = {' . $type . ':'. $name .'}, ';
+        }
+
+        return rtrim($set, ',');
+    }
+
     public function getByUser(int $userId): ?PostLimitEntity
     {
         if (empty($userId)) {

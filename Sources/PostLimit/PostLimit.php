@@ -17,7 +17,7 @@ namespace PostLimit;
 class PostLimit
 {
     public const NAME = 'PostLimit';
-    public const POST_LEFT_TO_SHOW_NOTIFICATION = 3;
+    public const DEFAULT_POST_LEFT_TO_SHOW_NOTIFICATION = 3;
     private PostLimitService $service;
 
     public function __construct(?PostLimitService $service = null)
@@ -33,7 +33,7 @@ class PostLimit
 
     public function handle(): void
     {
-        if (!$this->service->isEnable() || !$this->service->isUserLimited()){
+        if (!$this->service->isEnable() || !$this->service->isUserLimited()) {
             return;
         }
 
@@ -42,7 +42,7 @@ class PostLimit
         $limit = $entity->getPostLimit();
         $messagesLeftCount = $limit - $postCount;
 
-        if ($postCount < $limit && $messagesLeftCount <= self::POST_LEFT_TO_SHOW_NOTIFICATION) {
+        if ($postCount < $limit && $messagesLeftCount <= self::DEFAULT_POST_LEFT_TO_SHOW_NOTIFICATION) {
             // @TODO: handle showing the notification on posting
             $notification = $this->service->getNotificationContent($messagesLeftCount);
 
@@ -56,6 +56,30 @@ class PostLimit
 
     public function updateCount($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters): void
     {
+        $this->service->updateCount();
+    }
 
+    public function createCount(&$regOptions, &$theme_vars, &$memberID)
+    {
+        $this->service->createDefaultEntity($memberID);
+    }
+
+    public function profile(&$profileAreas): void
+    {
+        global $txt;
+
+        if (!$this->service->isEnable()) {
+            return;
+        }
+
+        $profileAreas['info']['areas'][strtolower(self::NAME)] = [
+            'label' => $txt[self::NAME . 'profile_panel'],
+            'icon' => 'members',
+            'function' => fn () => $this->service->profilePage(),
+            'permission' => [
+                'own' => 'is_not_guest',
+                'any' => 'profile_view',
+            ],
+        ];
     }
 }

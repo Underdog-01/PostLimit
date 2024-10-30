@@ -30,6 +30,7 @@
 		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::updateCount#" />
 <!--		@Todo: Toy with template layers to display a notification on how many posts until reaching the post limit-->
 		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" />
+		<hook hook="integrate_profile_areas" function="\\PostLimit\PostLimit::profile#"  />
 		<redirect url="$scripturl?action=admin;area=postlimit" timeout="3000"></redirect>
 	</install>
 
@@ -41,6 +42,8 @@
 		<hook hook="integrate_post_start" function="\PostLimit\PostLimit::handle#" reverse="true"/>
 		<hook hook="integrate_post2_start" function="\PostLimit\PostLimit::handle#" reverse="true"/>
 		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::updateCount#" reverse="true"/>
+		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" reverse="true"/>
+		<hook hook="integrate_profile_areas" function="\\PostLimit\PostLimit::profile#"  reverse="true"/>
 		<database>install.php</database>
 		<remove-dir name="$sourcedir/AutoRespond" />
 
