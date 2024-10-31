@@ -23,10 +23,10 @@ class PostLimitAdmin
     protected PostLimitService $service;
     protected PostLimitUtils $utils;
 
-    public function __construct(PostLimitService $service, PostLimitUtils $utils)
+    public function __construct(?PostLimitService $service = null, ?PostLimitUtils $utils = null)
     {
-        $this->utils = $utils;
-        $this->service = $service;
+        $this->utils = $utils ?? new PostLimitUtils();
+        $this->service = $service ?? new PostLimitService();
     }
 
     public function menu(&$admin_areas): void
@@ -68,7 +68,7 @@ class PostLimitAdmin
         $config_vars = [
             ['check', PostLimit::NAME . '_enable','subtext' => $this->utils->text('enable_sub')],
             ['large_text', PostLimit::NAME . '_custom_message', 'subtext' => $this->utils->text('custom_message_sub')],
-            ['int', PostLimit::NAME . '_default_post_limit', 'subtext' => $this->utils->text('default_post_limit_sub')],
+            ['int', PostLimit::NAME . '_ ', 'subtext' => $this->utils->text('default_post_limit_sub')],
             ['int', PostLimit::NAME . '_post_count_alert', 'subtext' => $this->utils->text('_post_count_alert_sub')],
             ['check', PostLimit::NAME . '_enable_global_limit','subtext' => $this->utils->text('enable_global_limit_sub')],
         ];

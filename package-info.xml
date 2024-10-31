@@ -17,8 +17,7 @@
 		<readme parsebbc="true">readme.txt</readme>
 		<code>installCheck.php</code>
 		<database>install.php</database>
-		<code>hooks.php</code>
-		<modification>PostLimit.xml</modification>
+<!--		<modification>PostLimit.xml</modification>-->
 		<require-dir name="Themes" destination="$boarddir">Theme files</require-dir>
 		<require-dir name="Sources/PostLimit" destination="$sourcedir">Source files</require-dir>
 		<hook hook="integrate_autoload" function="$sourcedir/PostLimit/PostLimit.php|\PostLimit\PostLimit::autoload#" reverse="true"/>
@@ -45,12 +44,8 @@
 		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" reverse="true"/>
 		<hook hook="integrate_profile_areas" function="\\PostLimit\PostLimit::profile#"  reverse="true"/>
 		<database>install.php</database>
-		<remove-dir name="$sourcedir/AutoRespond" />
-
-
-		<modification reverse="true">PostLimit.xml</modification>
 		<remove-dir name="$sourcedir/PostLimit" />
-		<remove-file name="$sourcedir/tasks/PostLimit.php" />
+<!--		<remove-file name="$sourcedir/tasks/PostLimit.php" />-->
 		<remove-file name="$languagedir/PostLimit.english.php" />
 		<remove-file name="$themedir/PostLimit.template.php" />
 	</uninstall>
