@@ -29,7 +29,7 @@ class PostLimitService
         $this->utils = $utils ?? new PostLimitUtils();
         $this->repository = $repository ?? new PostLimitRepository();
         $this->boardId = $board;
-        $this->userId = (int) $user_info['user_id'];
+        $this->userId = (int) $user_info['id'];
         $this->entity = $this->getEntityByUser();
     }
 
@@ -44,7 +44,8 @@ class PostLimitService
         return $this->repository->insert(new PostLimitEntity([
             PostLimitEntity::ID_USER => $userId ?? $this->userId,
             PostLimitEntity::ID_BOARDS => [],
-            PostLimitEntity::POST_LIMIT => $this->utils->setting('default_post_limit'),
+            PostLimitEntity::POST_LIMIT => $this->utils->setting('default_post_limit',
+                PostLimit::DEFAULT_POST_LIMIT),
             PostLimitEntity::POST_COUNT => 0,
         ]));
     }

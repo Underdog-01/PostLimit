@@ -14,21 +14,24 @@ declare(strict_types=1);
 
 namespace PostLimit;
 
+// No DI :(
+require 'PostLimitService.php';
+require 'PostLimitAdmin.php';
+require 'PostLimitUtils.php';
+require 'PostLimitEntity.php';
+require 'PostLimitRepository.php';
+
 class PostLimit
 {
     public const NAME = 'PostLimit';
     public const DEFAULT_POST_LEFT_TO_SHOW_NOTIFICATION = 3;
+    public const DEFAULT_POST_LIMIT = 10;
     private PostLimitService $service;
 
     public function __construct(?PostLimitService $service = null)
     {
         //No DI :(
         $this->service = $service ?? new PostLimitService();
-    }
-
-    public function autoload(&$classMap): void
-    {
-        $classMap[self::NAME . '\\'] = self::NAME . '/';
     }
 
     public function handle(): void
@@ -72,8 +75,10 @@ class PostLimit
             return;
         }
 
+        loadLanguage(PostLimit::NAME);
+
         $profileAreas['info']['areas'][strtolower(self::NAME)] = [
-            'label' => $txt[self::NAME . 'profile_panel'],
+            'label' => $txt[self::NAME . '_profile_panel'],
             'icon' => 'members',
             'function' => fn () => $this->service->profilePage(),
             'permission' => [

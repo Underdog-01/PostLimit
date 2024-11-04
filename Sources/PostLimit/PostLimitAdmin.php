@@ -16,8 +16,11 @@ namespace PostLimit;
 
 class PostLimitAdmin
 {
+    public const SETTINGS = 'settings';
+    public const PERMISSIONS = 'permissions';
     public const ACTIONS = [
-        'settings',
+        self::SETTINGS,
+        self::PERMISSIONS,
     ];
     public const URL = 'action=admin;area=postlimit';
     protected PostLimitService $service;
@@ -36,9 +39,10 @@ class PostLimitAdmin
         $admin_areas['config']['areas'][strtolower(PostLimit::NAME)] = array(
             'label' => $this->utils->text('admin_panel'),
             'function' => [$this, 'main'],
-            'icon' => 'posts.gif',
+            'icon' => 'posts',
             'subsections' => [
-                'general' => [$this->utils->text('admin_panel_settings')],
+                self::SETTINGS => [$this->utils->text('admin_settings')],
+                self::PERMISSIONS => [$this->utils->text('admin_permissions')],
             ],
         );
     }
@@ -51,7 +55,8 @@ class PostLimitAdmin
             'title' => $this->utils->text('admin_panel'),
             'description' => $this->utils->text('admin_panel_desc'),
             'tabs' => [
-                self::ACTIONS[0] => []
+                self::SETTINGS => [],
+                self::PERMISSIONS => []
             ],
         ];
 
@@ -60,12 +65,12 @@ class PostLimitAdmin
         $action : self::ACTIONS[0];
 
         $this->setContext($action);
-        $this->{$action}();
+        $this->{$action}($action);
     }
 
-    public function settings(): void
+    public function settings(string $action): void
     {
-        $config_vars = [
+        $configVars = [
             ['check', PostLimit::NAME . '_enable','subtext' => $this->utils->text('enable_sub')],
             ['large_text', PostLimit::NAME . '_custom_message', 'subtext' => $this->utils->text('custom_message_sub')],
             ['int', PostLimit::NAME . '_ ', 'subtext' => $this->utils->text('default_post_limit_sub')],
@@ -73,17 +78,34 @@ class PostLimitAdmin
             ['check', PostLimit::NAME . '_enable_global_limit','subtext' => $this->utils->text('enable_global_limit_sub')],
         ];
 
-        if ($this->utils->request('save'))
+        if ($this->utils->isRequestSet('save'))
         {
-            checkSession();
-            saveDBSettings($config_vars);
-            redirectexit(self::URL);
+            $this->saveConfig($configVars, $action);
         }
 
-        prepareDBSettingContext($config_vars);
+        prepareDBSettingContext($configVars);
     }
 
-    public function permissions(&$permissionGroups, &$permissionList)
+    public function permissions(string $action): void
+    {
+        $configVars = [
+            [
+                'permissions',
+                PostLimit::NAME . '_can_set_post_limit',
+                0,
+                $this->utils->text('can_set_post_limit'),
+            ]
+        ];
+
+        if ($this->utils->isRequestSet('save'))
+        {
+            $this->saveConfig($configVars, $action);
+        }
+
+        prepareDBSettingContext($configVars);
+    }
+
+    public function permissionsHook(&$permissionGroups, &$permissionList)
     {
         $simple = PostLimit::NAME . '_per_simple';
         $classic = PostLimit::NAME . '_per_classic';
@@ -97,13 +119,21 @@ class PostLimitAdmin
         $permissionGroups['membergroup']['classic'] = [$classic];
     }
 
+    protected function saveConfig(array $configVars, string $action): void
+    {
+        checkSession();
+        saveDBSettings($configVars);
+        redirectexit(self::URL . ';sa=' . $action);
+    }
+
     protected function setContext(string $action): void
     {
-        global $context, $scripturl, $txt;
+        global $context, $scripturl;
 
         $context['sub_action'] = $action;
         $context['page_title'] = $this->utils->text('admin_' . $action);
-        $context['post_url'] = $scripturl . '?' . self::URL .';save';
+        $context['post_url'] = $scripturl . '?' . self::URL .';sa=' . $action . ';save';
+        $context['sub_template'] = 'show_settings';
         $context['settings_title'] = $context['page_title'];
     }
 

@@ -30,8 +30,9 @@
 /* Admin panel */
 $txt['PostLimit_message_default'] = 'Hi {username}, you don\'t have any more messages left for today.';
 $txt['PostLimit_admin_panel'] = 'Post Limit admin panel';
-$txt['PostLimit_admin_panel_settings'] = 'Settings';
-$txt['PostLimit_admin_panel_desc'] = 'From here you can set some global settings for the mod';
+$txt['PostLimit_admin_panel_desc'] = 'From here you can set some global settings and permissions for Post Limit mod';
+$txt['PostLimit_admin_settings'] = 'Settings';
+$txt['PostLimit_admin_permissions'] = 'Permissions';
 $txt['PostLimit_enable'] = 'Enable the mod';
 $txt['PostLimit_enable_global_limit'] = 'Enable the global limit';
 $txt['PostLimit_enable_global_limit_sub'] = 'If this setting is on, users with a post limit and no boards specified will be limited on all boards.';
@@ -54,9 +55,10 @@ $txt['PostLimit_profile_save'] = 'Save';
 
 /* Permissions strings */
 $txt['cannot_can_set_post_limit'] = 'I\'m sorry, you are not allowed to set post limits.';
-$txt['permissiongroup_simple_PostLimit_per_simple'] = 'Post Limit mod permissions';
-$txt['permissiongroup_PostLimit_per_classic'] = 'Post Limit mod permissions';
-$txt['permissionname_PostLimit_can_set_post_limit'] = 'Can set post limits';
+$txt['permissiongroup_simple_PostLimit_per_simple'] =
+$txt['permissiongroup_PostLimit_per_classic']  =
+$txt['PostLimit_permissions_title'] = 'Post Limit mod permissions';
+$txt['PostLimit_can_set_post_limit'] = $txt['permissionname_PostLimit_can_set_post_limit'] = 'Can set post limits';
 $txt['PostLimit_message_cannot'] = $txt['cannot_can_set_post_limit'];
 $txt['PostLimit_message_cannot_admin'] = 'Admins cannot be limited';
 $txt['PostLimit_message_cannot_own'] = 'You cannot set your own limit';

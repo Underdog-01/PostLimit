@@ -74,7 +74,7 @@ class PostLimitRepository
 			WHERE {raw:columnName} = {int:userId}',
             [
                 'from' => PostLimitEntity::TABLE,
-                'columns' => array_keys(PostLimitEntity::COLUMNS),
+                'columns' => implode(',', array_keys(PostLimitEntity::COLUMNS)),
                 'columnName' => PostLimitEntity::ID_USER,
                 'userId' => $userId
             ]
@@ -128,10 +128,12 @@ class PostLimitRepository
     {
         $entity = null;
 
+        // This only works for a single entity but thats OK
         while ($row = $this->fetchAssoc($request)) {
-            $entity = new PostLimitEntity($row);
+            $entity = new PostLimitEntity(array_map(function ($column) {
+                return ctype_digit($column) ? ((int) $column) : explode(',', $column);
+            }, $row));
         }
-
         $this->freeResult($request);
 
         return $entity;

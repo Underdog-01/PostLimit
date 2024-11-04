@@ -42,7 +42,12 @@ class PostLimitUtils
 
     public function request(string $key)
     {
-        return isset($_REQUEST[$key]) ? $this->sanitize($_REQUEST[$key]) : null;
+        return $this->isRequestSet($key) ? $this->sanitize($_REQUEST[$key]) : null;
+    }
+
+    public function isRequestSet(string $key): bool
+    {
+        return isset($_REQUEST[$key]);
     }
 
     public function text(string $textKey = ''): string
@@ -55,7 +60,7 @@ class PostLimitUtils
             loadLanguage(PostLimit::NAME);
         }
 
-        return $txt[$fullKey];
+        return $txt[$fullKey] ?? '';
     }
 
     public function setting(string $settingKey = '', $defaultValue = false)
