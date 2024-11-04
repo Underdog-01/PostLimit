@@ -67,7 +67,11 @@ class PostLimitUtils
     {
         global $modSettings;
 
-        return $modSettings[$settingKey] ?? $defaultValue;
+        $fullKey = PostLimit::NAME . '_' . $settingKey;
+
+        return $modSettings[$fullKey] ?
+            (ctype_digit($modSettings[$fullKey]) ? ((int) $modSettings[$fullKey]) : $modSettings[$fullKey]) :
+            $defaultValue;
     }
 
     public function setContext(array $values): void

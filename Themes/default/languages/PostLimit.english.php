@@ -35,10 +35,39 @@ $txt['PostLimit_admin_settings'] = 'Settings';
 $txt['PostLimit_admin_permissions'] = 'Permissions';
 $txt['PostLimit_enable'] = 'Enable the mod';
 $txt['PostLimit_enable_global_limit'] = 'Enable the global limit';
-$txt['PostLimit_enable_global_limit_sub'] = 'If this setting is on, users with a post limit and no boards specified will be limited on all boards.';
+$txt['PostLimit_enable_global_limit_sub'] = 'If this setting is on, 
+users with a post limit and no boards specified will be limited on all boards.';
+$txt['PostLimit_default_post_limit'] = 'Default post limit';
+$txt['PostLimit_default_post_limit_sub'] = 'When installing the mod, you can set a default limit for all users,
+ this default limit will apply if the user doesn\'t have a limit specified.
+  Handy for when the mod is first installed and you haven\'t configured each user yet
+   or you want to apply a global limit for all your users at once. Default is 0 (the user won\'t be limited)';
+$txt['PostLimit_post_count_alert'] = 'Percentage of post reached for sending an alert';
+$txt['PostLimit_post_count_alert_sub'] = 'When the user has reached X amount of posts before hitting the post limit,
+ an alert will be sent indicating the users they have X amount of posts left.<br />
+It is based on percentage due to post limit being per user. 
+For example, if a user has a 10 post limit, and you set this setting to 80%,
+ the user will receive an alert on his/her 8th post, indicating they only have 2 more posts left. Default is 80';
 $txt['PostLimit_enable_sub'] = 'This Setting must be on for the mod to work properly.';
 $txt['PostLimit_custom_message'] = 'Put your custom message here';
-$txt['PostLimit_custom_message_sub'] = 'Write the custom message the user will see, you can use {username} and {limit} to personalize the message even more<br />- {username} will display the nick of the user who will receive the message<br />- {limit} will display the amount of messages this particular user can make.<br /> If you leave this message empty, the default message will appear: '. $txt['PostLimit_message_default'] .'';
+$txt['PostLimit_custom_message_sub'] = 'Write a custom message the user will see when they have reached theor posting limit<br /> 
+you can use the following tokens to personalize the message even more:<br />
+- {username} will display the display name of the user who will receive the message<br />
+- {nameColor} will display the colored display name (according to their user group) of the user who will receive the message<br />
+- {linkColor} will display a colored profile link (according to their user group) of the user who will receive the message<br />
+- {limit} will display the amount of messages this particular user can make.<br />
+ If you leave this message empty, the default message will appear:<br /><i>'. $txt['PostLimit_message_default'] .'</i>';
+$txt['PostLimit_alert_message_default'] = 'Hi {username}! you have reached {percentage}% of the total amount you are allowed to post for today.';
+$txt['PostLimit_custom_alert_message'] = 'Put your custom alert message here';
+$txt['PostLimit_custom_alert_message_sub'] = 'Write a custom alert message the user will see when they reached the percentage to show an alert, 
+you can use the following tokens to personalize the message even more<br />
+- {username} will display the display name of the user who will receive the message<br />
+- {nameColor} will display the colored display name (according to their user group) of the user who will receive the message<br />
+- {linkColor} will display a colored profile link (according to their user group) of the user who will receive the message<br />
+- {limit} will display the amount of messages this particular user can make.<br />
+- {percentage} will show the percentage the user has reached.<br />
+- {post_left} The amount of posts the user can make before reaching their limit.<br />
+ If you leave this message empty, the default message will appear:<br /><i>'. $txt['PostLimit_alert_message_default'] .'</i>';
 $txt['PostLimit_profile_panel'] = 'Post Limit profile panel';
 
 /* Messages */

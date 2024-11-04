@@ -24,8 +24,8 @@ require 'PostLimitRepository.php';
 class PostLimit
 {
     public const NAME = 'PostLimit';
-    public const DEFAULT_POST_LEFT_TO_SHOW_NOTIFICATION = 3;
-    public const DEFAULT_POST_LIMIT = 10;
+    public const DEFAULT_PERCENTAGE_TO_ALERT = 80;
+    public const DEFAULT_POST_LIMIT = 0;
     private PostLimitService $service;
 
     public function __construct(?PostLimitService $service = null)
@@ -45,7 +45,7 @@ class PostLimit
         $limit = $entity->getPostLimit();
         $messagesLeftCount = $limit - $postCount;
 
-        if ($postCount < $limit && $messagesLeftCount <= self::DEFAULT_POST_LEFT_TO_SHOW_NOTIFICATION) {
+        if ($postCount < $limit && $messagesLeftCount <= self::DEFAULT_PERCENTAGE_TO_ALERT) {
             // @TODO: handle showing the notification on posting
             $notification = $this->service->getNotificationContent($messagesLeftCount);
 
