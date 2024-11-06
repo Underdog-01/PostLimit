@@ -88,8 +88,8 @@ class PostLimitRepository
         }
 
         return $this->db['db_query'](
-            '',
-            'DELETE
+            '','
+            DELETE
 			FROM {db_prefix}' . PostLimitEntity::TABLE . '
 		    WHERE ' . $byKey . ' IN({array_int:ids})',
             ['ids' => $ids]
