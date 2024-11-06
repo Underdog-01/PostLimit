@@ -110,6 +110,16 @@ class PostLimitRepository
         );
     }
 
+    public function resetPostCount(): void
+    {
+        $this->db['db_query'](
+            '',
+            'UPDATE {db_prefix}' . PostLimitEntity::TABLE . '
+			SET post_count = 0',
+            []
+        );
+    }
+
     public function getInsertedId(): int
     {
         return $this->db['db_insert_id']('{db_prefix}' . PostLimitEntity::TABLE, PostLimitEntity::ID_USER);
@@ -138,23 +148,6 @@ class PostLimitRepository
 
         updateMemberData($backgroundTaskDetails['idUser'], array('alerts' => '+'));
     }
-
-    public function deleteAlerts(int $userId): void
-    {
-        $this->db['db_query']('', '
-		DELETE FROM {db_prefix}user_alerts
-		WHERE id_member = {int:id_member}
-            AND is_read = 0
-            AND content_type = {string:content_type}
-            AND content_id = {int:content_id}',
-        [
-            'id_member' => $userId,
-            'content_type' => strtolower(PostLimit::NAME),
-            'content_id' => $userId,
-        ]
-        );
-    }
-
 
     protected function fetchAssoc($result): ?array
     {

@@ -80,6 +80,7 @@ $smcFunc['db_insert'](
         'disabled' => 'int',
         'task' => 'string',
     ],
-    [0,0,0,1,'d',0,'postLimit'],
+    // Directly call the repository FTW!!!!
+    [0,0,0,1,'d',0,'$sourcedir/PostLimit/PostLimitRepository.php|\PostLimit\PostLimitRepository::resetPostCount#'],
     ['task']
 );

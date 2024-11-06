@@ -16,7 +16,6 @@ class PostLimitNotify extends SMF_BackgroundTask
     }
     public function execute(): bool
     {
-        $this->repository->deleteAlerts((int) $this->_details['idUser']);
         $this->repository->insertAlert($this->_details);
 
         return true;
