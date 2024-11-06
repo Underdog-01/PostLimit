@@ -65,9 +65,9 @@ class PostLimitEntity
         return explode(',', $this->idBoards);
     }
 
-    public function setIdBoards(array $idBoards): void
+    public function setIdBoards($idBoards): void
     {
-        $this->idBoards = implode(',', $idBoards);
+        $this->idBoards = is_array($idBoards) ? implode(',', $idBoards) : (string) $idBoards;
     }
 
     public function getPostLimit(): int

@@ -82,4 +82,9 @@ class PostLimitUtils
             $context[$key] = $value;
         }
     }
+
+    public function calculatePercentage($number, $total): int
+    {
+        return $total <= 0 ? 0 : (int) round(($number / $total) * 100);
+    }
 }

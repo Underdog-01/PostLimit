@@ -25,6 +25,8 @@
  *
  */
 
+use PostLimit\PostLimit;
+
 if (!defined('SMF')) {
     die('Hacking attempt...');
 }
@@ -33,66 +35,52 @@ function template_postLimit_profile_page()
 {
     global $txt, $context, $scripturl;
 
-    if (!empty($context['postLimit']['cannot'])) {
-        echo '
-				<span class="clear upperframe">
-					<span></span>
-				</span>
-				<div class="roundframe rfix">
-					<div class="innerframe">
-						<div class="content">
-							', $context['postLimit']['cannot'] ,'
-						</div>
-					</div>
-				</div>
-				<span class="lowerframe">
-					<span></span>
-				</span><br />';
-    } else {
-        echo '
-				<div class="cat_bar">
-					<h3 class="catbg">
-						<span class="ie6_header floatleft">
-							', $txt['PostLimit_profile_panel'] ,'
-						</span>
-					</h3>
-				</div>';
-
-        echo '
-				<span class="clear upperframe">
-					<span></span>
-				</span>
-				<div class="roundframe rfix">
-					<div class="innerframe">';
-
-        /* Form */
-        echo '<form action="', $scripturl , '?action=profile;area=userlimit;u=', $context['member']['id'] ,';save" method="post" target="_self" id="postmodify" class="flow_hidden" onsubmit="submitonce(this);" >
-						<dl id="post_header">
-							<dt>
-								<span id="caption_subject">', $txt['PostLimit_profile_userlimit'] ,'</span>
-							</dt>
-							<dd>
-								<input type="text" name="postlimit" size="5" tabindex="1" maxlength="5" value="', $context['postLimit']['limit'] ,'" class="input_text" /><br />
-								', $txt['PostLimit_profile_userlimit_desc'] ,'
-							</dd>
-							<dt>
-								<span id="caption_subject">', $txt['PostLimit_profile_boards'] ,'</span>
-							</dt>
-							<dd>
-								<input type="text" name="postboards" size="25" tabindex="1" maxlength="25" value="', $context['postLimit']['boards'] ,'" class="input_text" /><br />
-								', $txt['PostLimit_profile_boards_desc'] ,'
-							</dd>
-						</dl>
-					<div id="confirm_buttons">
-						<input type="hidden" id="', $context['session_var'], '" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-						<input type="submit" name="send" class="sbtn" value="', $txt['PostLimit_profile_save'] ,'" />
-					</div>';
-
-        echo '
-					</div>
-				</div>
-				<span class="lowerframe">
-					<span></span>
-				</span><br />';
-    }
+    echo '
+    <div class="cat_bar">
+        <h3 class="catbg profile_hd">
+            ', $txt['PostLimit_profile_panel'] ,'
+        </h3>
+    </div>
+    <p class="information">
+        ', $txt['PostLimit_profile_panel_sub'] ,'
+    </p>
+    <div class="roundframe"> 
+    <form
+        action="', $scripturl , '?action=profile;area=', strtolower(PostLimit::NAME) ,';u=', $context['member']['id'] ,';save"
+        method="post" 
+        accept-charset="UTF-8" 
+        name="creator" 
+        id="creator"
+        enctype="multipart/form-data"
+        target="_self">
+        <dl class="settings">
+            <dt>
+                <strong>', $txt['PostLimit_profile_userlimit'] ,'</strong><br />
+                <span class="smalltext">', $txt['PostLimit_profile_userlimit_desc'] ,'</span>
+            </dt>
+            <dd>
+                <input 
+                    type="text"
+                    name="', \PostLimit\PostLimitEntity::POST_LIMIT ,'" 
+                    size="5" 
+                    tabindex="1" 
+                    maxlength="5" 
+                    value="', $context[PostLimit::NAME]->getPostLimit() ,'" />
+            </dd>
+            <dt>
+                <strong>', $txt['PostLimit_profile_boards'] ,'</strong><br />
+                <span class="smalltext">', $txt['PostLimit_profile_boards_desc'] ,'</span>
+            </dt>
+            <dd>
+                <input type="text" 
+                    name="', \PostLimit\PostLimitEntity::ID_BOARDS ,'" 
+                    size="50" 
+                    tabindex="1" 
+                    maxlength="25" 
+                    value="', implode(',', $context[PostLimit::NAME]->getIdBoards()),'" />
+            </dd>
+        </dl>
+        <input type="submit" name="save" value="', $txt['save'] ,'" class="button floatright">
+        <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+    </form>';
 }

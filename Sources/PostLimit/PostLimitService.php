@@ -18,34 +18,26 @@ class PostLimitService
 {
     private PostLimitUtils $utils;
     private PostLimitRepository $repository;
-    private PostLimitEntity $entity;
-    private int $boardId;
-    private int $userId;
 
     public function __construct(?PostLimitUtils $utils = null, ?PostLimitRepository $repository = null)
     {
-        global $user_info, $board;
         //No DI :(
         $this->utils = $utils ?? new PostLimitUtils();
         $this->repository = $repository ?? new PostLimitRepository();
-        $this->boardId = $board;
-        $this->userId = (int) $user_info['id'];
-        $this->entity = $this->getEntityByUser();
     }
 
-    public function getEntityByUser(?int $userId = null): ?PostLimitEntity
+    public function getEntityByUser(int $userId): ?PostLimitEntity
     {
-        $entity = $this->repository->getByUser($userId ?? $this->userId);
-        return $entity ?? $this->createDefaultEntity();
+        $entity = $this->repository->getByUser($userId);
+        return (!$entity && $userId !== 0) ? $this->createDefaultEntity($userId) : $entity;
     }
 
-    public function createDefaultEntity(?int $userId = null): ?PostLimitEntity
+    public function createDefaultEntity(int $userId): ?PostLimitEntity
     {
         return $this->repository->insert(new PostLimitEntity([
-            PostLimitEntity::ID_USER => $userId ?? $this->userId,
+            PostLimitEntity::ID_USER => $userId,
             PostLimitEntity::ID_BOARDS => [],
-            PostLimitEntity::POST_LIMIT => $this->utils->setting('default_post_limit',
-                PostLimit::DEFAULT_POST_LIMIT),
+            PostLimitEntity::POST_LIMIT => PostLimit::DEFAULT_POST_LIMIT,
             PostLimitEntity::POST_COUNT => 0,
         ]));
     }
@@ -57,43 +49,31 @@ class PostLimitService
         return !$user_info['is_guest'] || !$this->utils->setting('enable');
     }
 
-    public function isUserLimited(): bool
+    public function isUserLimited(PostLimitEntity $entity, int $boardId): bool
     {
-        $limit = $this->entity->getPostLimit();
-        $boards = $this->entity->getIdBoards();
+        $limit = $entity->getPostLimit();
+        $boards = $entity->getIdBoards();
 
-        return $this->isBoardLimited() ||
+        return (in_array($boardId, $boards)) ||
             ($boards != false && $limit >= 1 && $this->utils->setting('enable_global_limit'));
     }
 
-    public function isBoardLimited(): bool
+    public function buildErrorMessage(PostLimitEntity $entity): void
     {
-        if (empty($this->boardId)) {
-            return false;
+        global $user_info;
+
+        $postCount = $entity->getPostCount();
+        $limit = $entity->getPostLimit();
+
+        if ($postCount <= $limit) {
+            return;
         }
-
-        return in_array($this->boardId, $this->entity->getIdBoards());
-    }
-
-    public function getNotificationContent(int $messagesLeftCount = 0): array
-    {
-        global $user_info;
-
-       return [
-           'title' => sprintf($this->utils->text('message_title'), $user_info['name']),
-           'message' => sprintf($this->utils->text('message'), $messagesLeftCount)
-       ];
-    }
-
-    public function getFatalErrorMessage(): string
-    {
-        global $user_info;
 
         $replacements = [
             'username' => $user_info['name'],
             'nameColor' => $user_info['name_color'],
             'linkColor' => $user_info['link_color'],
-            'limit' => $this->entity->getPostLimit(),
+            'limit' => $entity->getPostLimit(),
         ];
 
         $find = $replace = [];
@@ -103,23 +83,46 @@ class PostLimitService
             $replace[] = $r;
         }
 
-        $customMessage = $this->utils->setting('custom_message');
+        $customMessage = $this->utils->setting('custom_message', false);
 
-        return str_replace($find, $replace, $customMessage ?? $this->utils->text('message_default'));
+        fatal_lang_error(str_replace($find, $replace, $customMessage ??
+            $this->utils->text('message_default')));
     }
 
-    public function updateCount(int $userId = 0): void
+    public function buildAlert(PostLimitEntity $entity): bool
     {
-        $this->repository->updateCount($userId ?? $this->userId);
+        global $user_info;
+
+        $postCount = $entity->getPostCount();
+        $limit = $entity->getPostLimit();
+
+        $percentage = $this->utils->calculatePercentage($postCount, $limit);
+        $postCountAlert = $this->utils->setting('post_count_alert');
+
+        if ($percentage >= $postCountAlert) {
+            $this->repository->insertBackgroundTask([
+                'idUser' => $entity->getIdUser(),
+                'time' => time(),
+            ]);
+
+            return true;
+        }
+
+       return false;
+    }
+
+    public function updateCount(int $userId): void
+    {
+        $this->repository->updateCount($userId);
     }
 
     protected function checkSeeProfilePage(): void
     {
-        global $context;
+        global $context, $user_info;
 
         $message = '';
 
-        if (!allowedTo(PostLimit::NAME . '_can_set_post_limit')) {
+        if (!allowedTo(PostLimit::NAME . '_can_set_post_limit') || $user_info['is_guest']) {
             $message = $this->utils->text('message_cannot');
         } elseif ($context['member']['group_id'] == 1) {
             $message = $this->utils->text('message_cannot_admin');
@@ -142,38 +145,34 @@ class PostLimitService
         $context += [
             'page_title' => sprintf($txt['profile_of_username'], $context['member']['name']),
         ];
-        $context['user']['is_owner'] = $context['member']['id'] == $user_info['id'];
+        $context['user']['is_owner'] = (int) $context['member']['id'] === (int) $user_info['id'];
         $context['canonical_url'] = $scripturl . '?action=profile;u=' . $context['member']['id'];
     }
 
-    public function profilePage(): void
+    public function profilePage(PostLimitEntity $entity): void
     {
         global $context;
 
         $this->checkSeeProfilePage();
         $this->setTemplate();
 
-        $postLimit = $this->getEntityByUser((int) $context['member']['id']);
+        $context[PostLimit::NAME] = $entity;
 
-        $context[PostLimit::NAME] = $postLimit->toArray();
-
-        if ($this->utils->request('save')) {
+        if ($this->utils->isRequestSet('save')) {
             checkSession();
 
             if (!$this->utils->request(PostLimitEntity::POST_LIMIT)) {
                 return;
             }
 
-            $postLimit->setIdBoards(explode(',',
+            $entity->setIdBoards(array_filter(explode(',',
                 preg_replace('/[^0-9,]/',
-                    '', $this->utils->request(PostLimitEntity::ID_BOARDS))
-            ));
+                    '', (string) $this->utils->request(PostLimitEntity::ID_BOARDS))
+            )));
 
-            $postLimit->setPostLimit($this->utils->request(PostLimitEntity::POST_LIMIT));
-            $postLimit->setPostCount(0);
-            $postLimit->setIdUser($context['member']['id']);
+            $entity->setPostLimit($this->utils->request(PostLimitEntity::POST_LIMIT));
 
-            $this->repository->update($postLimit);
+            $this->repository->update($entity);
 
             redirectexit('action=profile;area='. strtolower(PostLimit::NAME) .';u='. $context['member']['id']);
         }

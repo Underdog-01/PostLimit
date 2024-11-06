@@ -28,38 +28,36 @@ class PostLimit
     public const DEFAULT_POST_LIMIT = 0;
     private PostLimitService $service;
 
-    public function __construct(?PostLimitService $service = null)
+    public function __construct()
     {
         //No DI :(
-        $this->service = $service ?? new PostLimitService();
+        $this->service = new PostLimitService();
     }
 
     public function handle(): void
     {
-        if (!$this->service->isEnable() || !$this->service->isUserLimited()) {
+        global $user_info, $board;
+
+        if (!$this->service->isEnable() || $user_info['is_guest']) {
             return;
         }
 
-        $entity = $this->service->getEntityByUser();
-        $postCount = $entity->getPostCount();
-        $limit = $entity->getPostLimit();
-        $messagesLeftCount = $limit - $postCount;
+        $entity = $this->service->getEntityByUser((int) $user_info['id']);
 
-        if ($postCount < $limit && $messagesLeftCount <= self::DEFAULT_PERCENTAGE_TO_ALERT) {
-            // @TODO: handle showing the notification on posting
-            $notification = $this->service->getNotificationContent($messagesLeftCount);
-
+        if (!$this->service->isUserLimited($entity, (int) $board)) {
             return;
         }
 
-        if ($postCount >= $limit) {
-            fatal_error($this->service->getFatalErrorMessage(), false);
+        if ($this->service->buildAlert($entity)) {
+            return;
         }
+
+        $this->service->buildErrorMessage($entity);
     }
 
     public function updateCount($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters): void
     {
-        $this->service->updateCount();
+        $this->service->updateCount((int) $posterOptions['id']);
     }
 
     public function createCount(&$regOptions, &$theme_vars, &$memberID)
@@ -69,22 +67,31 @@ class PostLimit
 
     public function profile(&$profileAreas): void
     {
-        global $txt;
+        global $txt, $user_info;
 
-        if (!$this->service->isEnable()) {
+        if (!$this->service->isEnable() || $user_info['is_guest']) {
             return;
         }
 
         loadLanguage(PostLimit::NAME);
 
+        $entity = $this->service->getEntityByUser((int) $user_info['id']);
+
+        $this->service->buildAlert($entity);
+
         $profileAreas['info']['areas'][strtolower(self::NAME)] = [
             'label' => $txt[self::NAME . '_profile_panel'],
             'icon' => 'members',
-            'function' => fn () => $this->service->profilePage(),
+            'function' => fn () => $this->service->profilePage($entity),
             'permission' => [
                 'own' => 'is_not_guest',
                 'any' => 'profile_view',
             ],
         ];
+    }
+
+    public function handleAlerts(array $content): void
+    {
+
     }
 }

@@ -37,11 +37,6 @@ $txt['PostLimit_enable'] = 'Enable the mod';
 $txt['PostLimit_enable_global_limit'] = 'Enable the global limit';
 $txt['PostLimit_enable_global_limit_sub'] = 'If this setting is on, 
 users with a post limit and no boards specified will be limited on all boards.';
-$txt['PostLimit_default_post_limit'] = 'Default post limit';
-$txt['PostLimit_default_post_limit_sub'] = 'When installing the mod, you can set a default limit for all users,
- this default limit will apply if the user doesn\'t have a limit specified.
-  Handy for when the mod is first installed and you haven\'t configured each user yet
-   or you want to apply a global limit for all your users at once. Default is 0 (the user won\'t be limited)';
 $txt['PostLimit_post_count_alert'] = 'Percentage of post reached for sending an alert';
 $txt['PostLimit_post_count_alert_sub'] = 'When the user has reached X amount of posts before hitting the post limit,
  an alert will be sent indicating the users they have X amount of posts left.<br />
@@ -69,6 +64,7 @@ you can use the following tokens to personalize the message even more<br />
 - {post_left} The amount of posts the user can make before reaching their limit.<br />
  If you leave this message empty, the default message will appear:<br /><i>'. $txt['PostLimit_alert_message_default'] .'</i>';
 $txt['PostLimit_profile_panel'] = 'Post Limit profile panel';
+$txt['PostLimit_profile_panel_sub'] = 'You can set the post limit and the boards this limit will be applied for this user here';
 
 /* Messages */
 $txt['PostLimit_message_overlimit'] = 'You don\'t have any more messages left, your limit is: %d';
@@ -80,7 +76,6 @@ $txt['PostLimit_profile_userlimit'] = 'Post Limit';
 $txt['PostLimit_profile_userlimit_desc'] = 'You can put any number, if empty, this user will not have any limit.';
 $txt['PostLimit_profile_boards'] = 'Board IDs';
 $txt['PostLimit_profile_boards_desc'] = 'Write the board Id\'s where this user will be limited, comma separated, example: 1,2,3,4';
-$txt['PostLimit_profile_save'] = 'Save';
 
 /* Permissions strings */
 $txt['cannot_can_set_post_limit'] = 'I\'m sorry, you are not allowed to set post limits.';

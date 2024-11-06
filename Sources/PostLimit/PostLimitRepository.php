@@ -55,7 +55,7 @@ class PostLimitRepository
     {
         $set = 'SET ';
         foreach (PostLimitEntity::COLUMNS as $name => $type) {
-            $set .= $name . ' = {' . $type . ':'. $name .'}, ';
+            $set .= ' ' . $name . ' = {' . $type . ':'. $name .'},';
         }
 
         return rtrim($set, ',');
@@ -114,6 +114,47 @@ class PostLimitRepository
     {
         return $this->db['db_insert_id']('{db_prefix}' . PostLimitEntity::TABLE, PostLimitEntity::ID_USER);
     }
+
+    public function insertBackgroundTask(array $content): void
+    {
+        $this->db['db_insert']('insert',
+            '{db_prefix}background_tasks',
+            ['task_file' => 'string', 'task_class' => 'string', 'task_data' => 'string', 'claimed_time' => 'int'],
+            ['$sourcedir/tasks/PostLimitNotify.php', 'PostLimitNotify', $this->db['json_encode']($content), 0],
+            ['id_task']
+        );
+    }
+
+    public function insertAlert(array $backgroundTaskDetails): void
+    {
+        $this->db['db_insert']('insert',
+            '{db_prefix}user_alerts',
+            ['alert_time' => 'int', 'id_member' => 'int', 'id_member_started' => 'int', 'member_name' => 'string',
+                'content_type' => 'string', 'content_id' => 'int', 'content_action' => 'string', 'is_read' => 'int', 'extra' => 'string'],
+            [$backgroundTaskDetails['time'], $backgroundTaskDetails['idUser'], $backgroundTaskDetails['idUser'], '',
+                strtolower(PostLimit::NAME), $backgroundTaskDetails['idUser'], '', 0, ''],
+            ['id_alert']
+        );
+
+        updateMemberData($backgroundTaskDetails['idUser'], array('alerts' => '+'));
+    }
+
+    public function deleteAlerts(int $userId): void
+    {
+        $this->db['db_query']('', '
+		DELETE FROM {db_prefix}user_alerts
+		WHERE id_member = {int:id_member}
+            AND is_read = 0
+            AND content_type = {string:content_type}
+            AND content_id = {int:content_id}',
+        [
+            'id_member' => $userId,
+            'content_type' => strtolower(PostLimit::NAME),
+            'content_id' => $userId,
+        ]
+        );
+    }
+
 
     protected function fetchAssoc($result): ?array
     {
