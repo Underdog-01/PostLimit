@@ -99,6 +99,9 @@ class PostLimitService
         $percentage = $this->utils->calculatePercentage($postCount, $limit);
         $postCountAlert = $this->utils->setting('post_count_alert');
 
+        // TODO remove return
+        return false;
+
         if ($percentage >= $postCountAlert) {
             $this->repository->insertBackgroundTask([
                 'idUser' => $entity->getIdUser(),

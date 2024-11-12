@@ -81,6 +81,6 @@ $smcFunc['db_insert'](
         'task' => 'string',
     ],
     // scheduled_tasks task column has a 24 char limit :(
-    [0,0,0,1,'d',0,'PostLimit::sht'],
+    [0,0,0,1,'d',0,'\PostLimit\PostLimit::s'],
     ['task']
 );

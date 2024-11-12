@@ -35,10 +35,11 @@ class PostLimit
     }
 
     // scheduled_tasks task column has a 24 char limit :(
-    public static function sht(): void
+    public static function s(): bool
     {
-        $repository = new PostLimitRepository();
-        $repository->resetPostCount();
+        (new PostLimitRepository())->resetPostCount();
+
+        return true;
     }
 
     public function handle(): void

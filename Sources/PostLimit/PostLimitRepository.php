@@ -112,12 +112,14 @@ class PostLimitRepository
 
     public function resetPostCount(): void
     {
-        $this->db['db_query'](
+      $r = $this->db['db_query'](
             '',
             'UPDATE {db_prefix}' . PostLimitEntity::TABLE . '
 			SET post_count = 0',
             []
         );
+
+      var_dump($r);
     }
 
     public function getInsertedId(): int
