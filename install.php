@@ -80,7 +80,7 @@ $smcFunc['db_insert'](
         'disabled' => 'int',
         'task' => 'string',
     ],
-    // Directly call the repository FTW!!!!
-    [0,0,0,1,'d',0,'$sourcedir/PostLimit/PostLimitRepository.php|\PostLimit\PostLimitRepository::resetPostCount#'],
+    // scheduled_tasks task column has a 24 char limit :(
+    [0,0,0,1,'d',0,'PostLimit::sht'],
     ['task']
 );

@@ -34,6 +34,13 @@ class PostLimit
         $this->service = new PostLimitService();
     }
 
+    // scheduled_tasks task column has a 24 char limit :(
+    public static function sht(): void
+    {
+        $repository = new PostLimitRepository();
+        $repository->resetPostCount();
+    }
+
     public function handle(): void
     {
         global $user_info, $board;
