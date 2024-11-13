@@ -20,12 +20,10 @@
 <!--		<modification>PostLimit.xml</modification>-->
 		<require-dir name="Themes" destination="$boarddir">Theme files</require-dir>
 		<require-dir name="Sources/PostLimit" destination="$sourcedir">Source files</require-dir>
-		<hook hook="integrate_autoload" function="\PostLimit\PostLimit::autoload#" />
+		<hook hook="integrate_pre_include" file="$sourcedir/PostLimit/PostLimit.php" />
 		<hook hook="integrate_admin_areas" function="\PostLimit\PostLimitAdmin::menu#" />
 		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissions#" />
-		<hook hook="integrate_post_start" function="\PostLimit\PostLimit::handle#" />
-		<hook hook="integrate_post2_start" function="\PostLimit\PostLimit::handle#" />
-		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::updateCount#" />
+		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::handle#" />
 		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" />
 		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimit::profile#"  />
 		<redirect url="$scripturl?action=admin;area=postlimit" timeout="3000"></redirect>
@@ -35,10 +33,7 @@
 		<hook hook="integrate_pre_include" file="$sourcedir/PostLimit/PostLimit.php" reverse="true"/>
 		<hook hook="integrate_admin_areas" function="$sourcedir/PostLimit/PostLimitAdmin.php|\PostLimit\PostLimitAdmin::menu#" reverse="true"/>
 		<hook hook="integrate_load_permissions" function="$sourcedir/PostLimit/PostLimitAdmin.php|\PostLimit\PostLimitAdmin::permissions#" reverse="true"/>
-		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimitAdmin::permissions#" reverse="true"/>
-		<hook hook="integrate_post_start" function="\PostLimit\PostLimit::handle#" reverse="true"/>
-		<hook hook="integrate_post2_start" function="\PostLimit\PostLimit::handle#" reverse="true"/>
-		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::updateCount#" reverse="true"/>
+		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::handle#" reverse="true"/>
 		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" reverse="true"/>
 		<hook hook="integrate_profile_areas" function="\\PostLimit\PostLimit::profile#"  reverse="true"/>
 		<database>install.php</database>

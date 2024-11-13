@@ -90,6 +90,12 @@ class PostLimitEntity
         $this->postCount = $postCount;
     }
 
+    public function isUserExempted() : bool
+    {
+        // User having a post limit set to 0 means this user is exempted
+        return $this->postLimit === 0;
+    }
+
     public function snakeToCamel(string $input): string
     {
         return \lcfirst(\str_replace('_', '', \ucwords($input, '_')));

@@ -42,17 +42,20 @@ class PostLimit
         return true;
     }
 
-    public function handle(): void
+    public function handle($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters): void
     {
-        global $user_info, $board;
+        $posterId = (int) $posterOptions['id'];
+        $boardId = (int) $topicOptions['board'];
 
-        if (!$this->service->isEnable() || $user_info['is_guest']) {
+        if (!$this->service->isEnable() || $posterId === 0) {
             return;
         }
 
-        $entity = $this->service->getEntityByUser((int) $user_info['id']);
+        $this->updateCount($posterId);
 
-        if (!$this->service->isUserLimited($entity, (int) $board)) {
+        $entity = $this->service->getEntityByUser($posterId);
+
+        if (!$this->service->isUserLimited($entity, $boardId)) {
             return;
         }
 
@@ -63,9 +66,9 @@ class PostLimit
         $this->service->buildErrorMessage($entity);
     }
 
-    public function updateCount($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters): void
+    public function updateCount(int $posterId): void
     {
-        $this->service->updateCount((int) $posterOptions['id']);
+        $this->service->updateCount($posterId);
     }
 
     public function createCount(&$regOptions, &$theme_vars, &$memberID)
@@ -84,8 +87,6 @@ class PostLimit
         loadLanguage(PostLimit::NAME);
 
         $entity = $this->service->getEntityByUser((int) $user_info['id']);
-
-        $this->service->buildAlert($entity);
 
         $profileAreas['info']['areas'][strtolower(self::NAME)] = [
             'label' => $txt[self::NAME . '_profile_panel'],

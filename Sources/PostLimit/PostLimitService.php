@@ -51,6 +51,10 @@ class PostLimitService
 
     public function isUserLimited(PostLimitEntity $entity, int $boardId): bool
     {
+        if ($entity->isUserExempted()) {
+            return false;
+        }
+
         $limit = $entity->getPostLimit();
         $boards = $entity->getIdBoards();
 
@@ -65,7 +69,7 @@ class PostLimitService
         $postCount = $entity->getPostCount();
         $limit = $entity->getPostLimit();
 
-        if ($postCount <= $limit) {
+        if ($postCount <= $limit || $entity->isUserExempted()) {
             return;
         }
 
@@ -91,16 +95,15 @@ class PostLimitService
 
     public function buildAlert(PostLimitEntity $entity): bool
     {
-        global $user_info;
+        if ($entity->isUserExempted()) {
+            return false;
+        }
 
         $postCount = $entity->getPostCount();
         $limit = $entity->getPostLimit();
 
         $percentage = $this->utils->calculatePercentage($postCount, $limit);
         $postCountAlert = $this->utils->setting('post_count_alert');
-
-        // TODO remove return
-        return false;
 
         if ($percentage >= $postCountAlert) {
             $this->repository->insertBackgroundTask([
