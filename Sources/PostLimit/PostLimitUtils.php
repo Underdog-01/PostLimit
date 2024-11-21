@@ -69,7 +69,7 @@ class PostLimitUtils
 
         $fullKey = PostLimit::NAME . '_' . $settingKey;
 
-        return $modSettings[$fullKey] ?
+        return !empty($modSettings[$fullKey]) ?
             (ctype_digit($modSettings[$fullKey]) ? ((int) $modSettings[$fullKey]) : $modSettings[$fullKey]) :
             $defaultValue;
     }

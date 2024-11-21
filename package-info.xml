@@ -25,7 +25,7 @@
 		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissions#" />
 		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::handle#" />
 		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" />
-		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimit::profile#"  />
+		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimitProfile::setArea#"  />
 		<redirect url="$scripturl?action=admin;area=postlimit" timeout="3000"></redirect>
 	</install>
 
@@ -35,7 +35,7 @@
 		<hook hook="integrate_load_permissions" function="$sourcedir/PostLimit/PostLimitAdmin.php|\PostLimit\PostLimitAdmin::permissions#" reverse="true"/>
 		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::handle#" reverse="true"/>
 		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" reverse="true"/>
-		<hook hook="integrate_profile_areas" function="\\PostLimit\PostLimit::profile#"  reverse="true"/>
+		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimitProfile::setArea#"  reverse="true"/>
 		<database>install.php</database>
 		<code>remove.php</code>
 		<remove-dir name="$sourcedir/PostLimit" />
