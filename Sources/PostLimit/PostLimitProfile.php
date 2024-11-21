@@ -25,11 +25,14 @@ class PostLimitProfile
         $this->setTemplate();
 
         $entity = $this->service->getEntityByUser((int) $context['id_member']);
+        $warningMessage = $this->getIsAllowedToMessage();
+        $enable = empty($warningMessage);
 
         $profileAreas['info']['areas'][strtolower(PostLimit::NAME)] = [
             'label' => $txt[PostLimit::NAME . '_profile_panel'],
             'icon' => 'members',
             'function' => fn () => $this->displayPage($entity),
+            'enabled' => $enable,
             'permission' => [
                 'own' => 'is_not_guest',
                 'any' => 'profile_view',
@@ -41,7 +44,8 @@ class PostLimitProfile
     {
         global $context;
 
-        $this->isAllowedTo();
+        $this->setTemplate();
+        $this->showWarning();
 
         $context[PostLimit::NAME] = $entity;
 
@@ -65,7 +69,20 @@ class PostLimitProfile
         }
     }
 
-    protected function isAllowedTo(): void
+    protected function showWarning(): void
+    {
+        global $context, $user_info;
+
+        $message = $this->getIsAllowedToMessage();
+
+        if (empty($message)) {
+            return;
+        }
+
+        fatal_lang_error(PostLimit::NAME . '_message_cannot_general', false, [$message]);
+    }
+
+    protected function getIsAllowedToMessage(): string
     {
         global $context, $user_info;
 
@@ -79,9 +96,7 @@ class PostLimitProfile
             $message = $this->utils->text('message_cannot_own');
         }
 
-        if (!empty($message)) {
-            fatal_lang_error(PostLimit::NAME . '_message_cannot_general', false, [$message]);
-        }
+        return $message;
     }
 
     protected function setTemplate(): void
