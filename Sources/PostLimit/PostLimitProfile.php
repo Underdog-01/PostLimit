@@ -80,7 +80,7 @@ class PostLimitProfile
         }
 
         if (!empty($message)) {
-            fatal_lang_error($message, true);
+            fatal_lang_error(PostLimit::NAME . '_message_cannot_general', false, [$message]);
         }
     }
 

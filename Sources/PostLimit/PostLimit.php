@@ -20,6 +20,7 @@ require 'PostLimitAdmin.php';
 require 'PostLimitUtils.php';
 require 'PostLimitEntity.php';
 require 'PostLimitRepository.php';
+require 'PostLimitProfile.php';
 
 class PostLimit
 {

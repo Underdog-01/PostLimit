@@ -86,6 +86,7 @@ $txt['PostLimit_can_set_post_limit'] = $txt['permissionname_PostLimit_can_set_po
 $txt['PostLimit_message_cannot'] = $txt['cannot_can_set_post_limit'];
 $txt['PostLimit_message_cannot_admin'] = 'Admins cannot be limited';
 $txt['PostLimit_message_cannot_own'] = 'You cannot set your own limit';
+$txt['PostLimit_message_cannot_general'] = 'Post Limit warning: %s';
 
 /* Scheduled Task */
 $taskName = '\PostLimit\PostLimit::s';
