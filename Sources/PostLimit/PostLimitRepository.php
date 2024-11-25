@@ -8,6 +8,7 @@ class PostLimitRepository
      * @var mixed
      */
     private $db;
+    protected const SETTINGS_TABLE_NAME = 'settings';
 
     public function __construct()
     {
@@ -112,14 +113,12 @@ class PostLimitRepository
 
     public function resetPostCount(): void
     {
-      $r = $this->db['db_query'](
+        $this->db['db_query'](
             '',
             'UPDATE {db_prefix}' . PostLimitEntity::TABLE . '
 			SET post_count = 0',
             []
         );
-
-      var_dump($r);
     }
 
     public function getInsertedId(): int
@@ -151,9 +150,53 @@ class PostLimitRepository
         updateMemberData($backgroundTaskDetails['idUser'], array('alerts' => '+'));
     }
 
+    public function getAfterPostHooks(): string
+    {
+        $hooks = '';
+        $request = $this->db['db_query'](
+            '',
+            'SELECT {raw:value}
+			FROM {db_prefix}{raw:from}
+			WHERE {raw:columnName} = {string:hookName}',
+            [
+                'value' => 'value',
+                'from' => self::SETTINGS_TABLE_NAME,
+                'columnName' => 'variable',
+                'hookName' => 'integrate_after_create_post'
+            ]
+        );
+
+        $hooks = $this->fetchRow($request);
+
+        $this->freeResult($request);
+
+        return $hooks[0];
+    }
+
+    public function updateAfterPostHooks(string $hooks): void
+    {
+        $this->db['db_query'](
+            '',
+            'UPDATE {db_prefix}{raw:from}
+			SET {raw:value} = {string:updatedValue}
+			WHERE {raw:columnName} = {string:hookName}',
+            [
+                'from' => self::SETTINGS_TABLE_NAME,
+                'value' => 'value',
+                'updatedValue' => $hooks,
+                'columnName' => 'variable',
+                'hookName' => 'integrate_after_create_post'
+            ]
+        );
+    }
+
     protected function fetchAssoc($result): ?array
     {
         return $this->db['db_fetch_assoc']($result);
+    }
+    protected function fetchRow($result): ?array
+    {
+        return $this->db['db_fetch_row']($result);
     }
     protected function freeResult($result): void
     {

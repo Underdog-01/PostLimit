@@ -38,7 +38,11 @@ class PostLimit
     // scheduled_tasks task column has a 24 char limit :(
     public static function s(): bool
     {
-        (new PostLimitRepository())->resetPostCount();
+        $repository = new PostLimitRepository();
+        $repository->resetPostCount();
+
+        // Make sure we are the last hook call, dont ask, just sage nod and move on
+        self::reOrderHookCall($repository);
 
         return true;
     }
@@ -91,5 +95,28 @@ class PostLimit
     public function handleAlerts(array $content): void
     {
 
+    }
+
+    protected static function reOrderHookCall(PostLimitRepository $repository): void
+    {
+        $hookReference = '\PostLimit\PostLimit::handle#';
+        $hooks = $repository->getAfterPostHooks();
+        $explodedHooks = explode(',', $hooks);
+
+        if (count($explodedHooks) <= 1) {
+            return;
+        }
+
+        foreach ($explodedHooks as $key => $hook) {
+            $hook = trim($hook);
+
+            if ($hook === $hookReference) {
+                unset($explodedHooks[$key]);
+            }
+        }
+
+        $explodedHooks[] = $hookReference;
+
+        $repository->updateAfterPostHooks(trim(implode(',', $explodedHooks)));
     }
 }
