@@ -69,7 +69,7 @@ class PostLimit
 
     public function checkLimit(&$msgOptions, &$topicOptions, &$posterOptions, &$message_columns, &$message_parameters): void
     {
-        $entity = $this->service->getEntityByUser($posterOptions['id']);
+        $entity = $this->service->getEntityByUser((int) $posterOptions['id']);
         $postCount = $entity->getPostCount();
         $limit = $entity->getPostLimit();
 
@@ -89,7 +89,7 @@ class PostLimit
 
     public function createCount(&$regOptions, &$theme_vars, &$memberID)
     {
-        $this->service->createDefaultEntity($memberID);
+        $this->service->createDefaultEntity((int) $memberID);
     }
 
     public function handleAlerts(array $content): void

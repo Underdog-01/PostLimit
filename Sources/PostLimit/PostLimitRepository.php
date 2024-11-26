@@ -131,7 +131,7 @@ class PostLimitRepository
         $this->db['db_insert']('insert',
             '{db_prefix}background_tasks',
             ['task_file' => 'string', 'task_class' => 'string', 'task_data' => 'string', 'claimed_time' => 'int'],
-            ['$sourcedir/tasks/PostLimitNotify.php', 'PostLimitNotify', $this->db['json_encode']($content), 0],
+            ['$sourcedir/PostLimit/PostLimitNotify.php', '\PostLimit\PostLimitNotify', $this->db['json_encode']($content), 0],
             ['id_task']
         );
     }
