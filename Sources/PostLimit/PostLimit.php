@@ -41,7 +41,7 @@ class PostLimit
         $repository = new PostLimitRepository();
         $repository->resetPostCount();
 
-        // Make sure we are the last hook call, dont ask, just sage nod and move on
+        // Make sure we are the last hook call, don't ask, just sage nod and move on
         self::reOrderHookCall($repository);
 
         return true;
@@ -107,16 +107,15 @@ class PostLimit
             return;
         }
 
-        foreach ($explodedHooks as $key => $hook) {
-            $hook = trim($hook);
+        $key = array_search($hookReference, $explodedHooks, true);
 
-            if ($hook === $hookReference) {
-                unset($explodedHooks[$key]);
-            }
+        if ($key === false) {
+            return;
         }
 
+        unset($explodedHooks[$key]);
         $explodedHooks[] = $hookReference;
 
-        $repository->updateAfterPostHooks(trim(implode(',', $explodedHooks)));
+        $repository->updateAfterPostHooks(trim(implode(',', array_map('trim', $explodedHooks))));
     }
 }
