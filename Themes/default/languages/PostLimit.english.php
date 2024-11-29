@@ -92,3 +92,6 @@ $txt['PostLimit_message_cannot_general'] = 'Post Limit warning: %s';
 $taskName = '\PostLimit\PostLimit::s';
 $txt['scheduled_task_' . $taskName] = 'Post Limit mod';
 $txt['scheduled_task_desc_' . $taskName] = 'Resets the post limit of every user down to 0.';
+
+// Alert text
+$txt['PostLimit_alert_frequency'] = 'daily posts';

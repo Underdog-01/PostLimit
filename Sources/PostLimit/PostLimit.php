@@ -21,6 +21,7 @@ require 'PostLimitUtils.php';
 require 'PostLimitEntity.php';
 require 'PostLimitRepository.php';
 require 'PostLimitProfile.php';
+require 'PostLimitAlerts.php';
 
 class PostLimit
 {
@@ -90,11 +91,6 @@ class PostLimit
     public function createCount(&$regOptions, &$theme_vars, &$memberID)
     {
         $this->service->createDefaultEntity((int) $memberID);
-    }
-
-    public function handleAlerts(array $content): void
-    {
-
     }
 
     protected static function reOrderHookCall(PostLimitRepository $repository): void

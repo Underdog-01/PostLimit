@@ -16,7 +16,7 @@ namespace PostLimit;
 
 class PostLimitService
 {
-    private PostLimitUtils $utils;
+    public PostLimitUtils $utils;
     private PostLimitRepository $repository;
 
     public function __construct(?PostLimitUtils $utils = null, ?PostLimitRepository $repository = null)
@@ -88,14 +88,10 @@ class PostLimitService
             return false;
         }
 
-        $postCount = $entity->getPostCount();
-        $limit = $entity->getPostLimit();
+        $alertPercentage = $this->calculatePercentage($entity);
 
-        $percentage = $this->utils->calculatePercentage($postCount, $limit);
-        $postCountAlert = $this->utils->setting('post_count_alert');
-
-        if ($percentage >= $postCountAlert) {
-            $this->repository->insertBackgroundTask([
+        if ($alertPercentage['percentage'] >= $alertPercentage['postCountAlert']) {
+            $this->repository->insertAlert([
                 'idUser' => $entity->getIdUser(),
                 'time' => time(),
             ]);
@@ -104,6 +100,22 @@ class PostLimitService
         }
 
        return false;
+    }
+
+    public function calculatePercentage(PostLimitEntity $entity): array
+    {
+        $postCount = $entity->getPostCount();
+        $limit = $entity->getPostLimit();
+
+        $percentage = $this->utils->calculatePercentage($postCount, $limit);
+        $postCountAlert = $this->utils->setting('post_count_alert');
+
+        return [
+            'percentage' => $percentage,
+            'postCountAlert' => $postCountAlert,
+            'postsLeft' => $limit - $postCount,
+            'limit' => $limit,
+        ];
     }
 
     public function updateEntity(PostLimitEntity $entity): void
