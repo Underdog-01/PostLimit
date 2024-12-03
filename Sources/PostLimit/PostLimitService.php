@@ -89,8 +89,9 @@ class PostLimitService
         }
 
         $alertPercentage = $this->calculatePercentage($entity);
+        $hasUnreadAlerts = $this->repository->hasUnreadAlerts($entity->getIdUser());
 
-        if ($alertPercentage['percentage'] >= $alertPercentage['postCountAlert']) {
+        if ($alertPercentage['percentage'] >= $alertPercentage['postCountAlert'] && !$hasUnreadAlerts) {
             $this->repository->insertAlert([
                 'idUser' => $entity->getIdUser(),
                 'time' => time(),

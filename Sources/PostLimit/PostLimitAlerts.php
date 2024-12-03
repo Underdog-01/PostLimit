@@ -34,7 +34,11 @@ class PostLimitAlerts
         $entity = $this->service->getEntityByUser((int) $postLimitAlert['sender_id']);
         $alertPercentage = $this->service->calculatePercentage($entity);
 
-        return strtr('You have reached {percentage} of your {limit} {frequency} post limit. You have {postsLeft} left.',
+        if ($alertPercentage['postsLeft'] <= 0) {
+            return $this->service->utils->text('alert_text_limit_reached');
+        }
+
+        return strtr($this->service->utils->text('alert_text'),
             [
                 '{frequency}' => $this->service->utils->text('alert_frequency'),
                 '{limit}' => $alertPercentage['limit'],

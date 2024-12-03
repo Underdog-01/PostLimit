@@ -94,4 +94,6 @@ $txt['scheduled_task_' . $taskName] = 'Post Limit mod';
 $txt['scheduled_task_desc_' . $taskName] = 'Resets the post limit of every user down to 0.';
 
 // Alert text
+$txt['PostLimit_alert_text'] = 'You have reached {percentage}% of your {limit} {frequency} limit. You have {postsLeft} left.';
 $txt['PostLimit_alert_frequency'] = 'daily posts';
+$txt['PostLimit_alert_text_limit_reached'] = 'You have reached your ' . $txt['PostLimit_alert_frequency'] . ' limit.';

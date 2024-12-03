@@ -45,6 +45,9 @@ class PostLimit
         // Make sure we are the last hook call, don't ask, just sage nod and move on
         self::reOrderHookCall($repository);
 
+        //No point in keeping alerts
+        $repository->deleteAllAlerts();
+
         return true;
     }
 

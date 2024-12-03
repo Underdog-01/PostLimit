@@ -9,6 +9,7 @@ class PostLimitRepository
      */
     private $db;
     protected const SETTINGS_TABLE_NAME = 'settings';
+    protected const ALERTS_TABLE_NAME = 'user_alerts';
 
     public function __construct()
     {
@@ -139,7 +140,7 @@ class PostLimitRepository
     public function insertAlert(array $backgroundTaskDetails): void
     {
         $this->db['db_insert']('insert',
-            '{db_prefix}user_alerts',
+            '{db_prefix}' . self::ALERTS_TABLE_NAME,
             ['alert_time' => 'int', 'id_member' => 'int', 'id_member_started' => 'int', 'member_name' => 'string',
                 'content_type' => 'string', 'content_id' => 'int', 'content_action' => 'string', 'is_read' => 'int', 'extra' => 'string'],
             [$backgroundTaskDetails['time'], $backgroundTaskDetails['idUser'], $backgroundTaskDetails['idUser'], '',
@@ -188,6 +189,56 @@ class PostLimitRepository
                 'hookName' => 'integrate_after_create_post'
             ]
         );
+    }
+
+    public function deleteAllAlerts()
+    {
+        global $sourcedir;
+
+        // Use SMF built-in functions
+        require_once($sourcedir . '/Profile-Modify.php');
+
+        $users = [];
+        $request = $this->db['db_query']('', '
+		SELECT id_member, id_alert FROM {db_prefix}{raw:tableName}
+		WHERE content_type = {string:identifier}',
+            [
+                'tableName' => self::ALERTS_TABLE_NAME,
+                'identifier' => strtolower(PostLimit::NAME)
+            ]
+        );
+
+        while ($row = $this->fetchAssoc($request)) {
+            if (!isset($users[$row['id_member']])) {
+                $users[$row['id_member']] = [];
+            }
+
+            $users[$row['id_member']][] = $row['id_alert'];
+        }
+
+        foreach ($users as $userId => $alertsToDelete) {
+            alert_delete($alertsToDelete, $userId);
+        }
+    }
+
+    public function hasUnreadAlerts(int $userId): bool
+    {
+        $request = $this->db['db_query'](
+            '',
+            'SELECT content_type
+			FROM {db_prefix}{raw:tableName}
+			WHERE content_type = {string:contentType}
+			AND id_member = {int:userId}
+			AND is_read = 0 ',
+            [
+                'contentType' => strtolower(PostLimit::NAME),
+                'tableName' => self::ALERTS_TABLE_NAME,
+                'columnName' => 'content_type',
+                'userId' => $userId
+            ]
+        );
+
+        return $this->db['db_num_rows']($request) !== 0;
     }
 
     protected function fetchAssoc($result): ?array
