@@ -77,7 +77,7 @@ class PostLimit
 
         $permissionName = $permission[0];
 
-        if (!isset($board_info) || !$this->service->checkPermissions($permissionName)) {
+        if (!$this->service->isEnable() || !isset($board_info) || !$this->service->checkPermissions($permissionName)) {
             return;
         }
 
