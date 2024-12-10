@@ -22,7 +22,7 @@
 		<require-dir name="Sources/PostLimit" destination="$sourcedir">Source files</require-dir>
 		<hook hook="integrate_pre_include" file="$sourcedir/PostLimit/PostLimit.php" />
 		<hook hook="integrate_admin_areas" function="\PostLimit\PostLimitAdmin::menu#" />
-		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissions#" />
+		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissionsHook#" />
 		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::handle#" />
 		<hook hook="integrate_fetch_alerts" function="\PostLimit\PostLimitAlerts::handle#" />
 		<hook hook="integrate_allowed_to_board" function="\PostLimit\PostLimit::allowBoard#" />
