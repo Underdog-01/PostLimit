@@ -34,9 +34,6 @@ $txt['PostLimit_admin_panel_desc'] = 'From here you can set some global settings
 $txt['PostLimit_admin_settings'] = 'Settings';
 $txt['PostLimit_admin_permissions'] = 'Permissions';
 $txt['PostLimit_enable'] = 'Enable the mod';
-$txt['PostLimit_enable_global_limit'] = 'Enable the global limit';
-$txt['PostLimit_enable_global_limit_sub'] = 'If this setting is on, 
-users with a post limit and no boards specified will be limited on all boards.';
 $txt['PostLimit_post_count_alert'] = 'Percentage of post reached for sending an alert';
 $txt['PostLimit_post_count_alert_sub'] = 'When the user has reached X amount of posts before hitting the post limit,
  an alert will be sent indicating the users they have X amount of posts left.<br />
@@ -48,8 +45,6 @@ $txt['PostLimit_custom_message'] = 'Put your custom message here';
 $txt['PostLimit_custom_message_sub'] = 'Write a custom message the user will see when they have reached theor posting limit<br /> 
 you can use the following tokens to personalize the message even more:<br />
 - {username} will display the display name of the user who will receive the message<br />
-- {nameColor} will display the colored display name (according to their user group) of the user who will receive the message<br />
-- {linkColor} will display a colored profile link (according to their user group) of the user who will receive the message<br />
 - {limit} will display the amount of messages this particular user can make.<br />
  If you leave this message empty, the default message will appear:<br /><i>'. $txt['PostLimit_message_default'] .'</i>';
 $txt['PostLimit_alert_message_default'] = 'Hi {username}! you have reached {percentage}% of the total amount you are allowed to post for today.';
@@ -57,8 +52,6 @@ $txt['PostLimit_custom_alert_message'] = 'Put your custom alert message here';
 $txt['PostLimit_custom_alert_message_sub'] = 'Write a custom alert message the user will see when they reached the percentage to show an alert, 
 you can use the following tokens to personalize the message even more<br />
 - {username} will display the display name of the user who will receive the message<br />
-- {nameColor} will display the colored display name (according to their user group) of the user who will receive the message<br />
-- {linkColor} will display a colored profile link (according to their user group) of the user who will receive the message<br />
 - {limit} will display the amount of messages this particular user can make.<br />
 - {percentage} will show the percentage the user has reached.<br />
 - {post_left} The amount of posts the user can make before reaching their limit.<br />
@@ -73,9 +66,10 @@ $txt['PostLimit_message_title'] = 'Attention %s!';
 
 /* Profile fields */
 $txt['PostLimit_profile_userlimit'] = 'Post Limit';
-$txt['PostLimit_profile_userlimit_desc'] = 'You can put any number, if empty, this user will not have any limit.';
+$txt['PostLimit_profile_userlimit_desc'] = 'You can put any number, if empty, this user will not be limited.';
 $txt['PostLimit_profile_boards'] = 'Board IDs';
-$txt['PostLimit_profile_boards_desc'] = 'Write the board Id\'s where this user will be limited, comma separated, example: 1,2,3,4';
+$txt['PostLimit_profile_boards_desc'] = 'Write the board Id\'s where this user will be limited, comma separated, example: 1,2,3,4
+<br /> If leave empty, and a post limit is set, the user will be limited on all boards';
 
 /* Permissions strings */
 $txt['cannot_can_set_post_limit'] = 'I\'m sorry, you are not allowed to set post limits.';
