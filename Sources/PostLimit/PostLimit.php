@@ -71,19 +71,36 @@ class PostLimit
         $this->service->buildAlert($entity);
     }
 
-    public function checkLimit(&$msgOptions, &$topicOptions, &$posterOptions, &$message_columns, &$message_parameters): void
+    public function allowGeneral(&$user_permissions, array $permission)
     {
-        $entity = $this->service->getEntityByUser((int) $posterOptions['id']);
-        $postCount = $entity->getPostCount();
-        $limit = $entity->getPostLimit();
+        global $user_info, $board_info;
 
-        if ($postCount <= $limit || $entity->isUserExempted()) {
+        $permissionName = $permission[0];
+
+        if (!isset($board_info) || !$this->service->checkPermissions($permissionName)) {
             return;
         }
 
-        $errorMessage = $this->service->buildErrorMessage($entity, $posterOptions);
+        $entity = $this->service->getEntityByUser((int) $user_info['id']);
 
-        fatal_lang_error($errorMessage);
+        if ($this->service->isLimitReachedByUser($entity, (int) $board_info['id'])) {
+            $key = array_search($permissionName, $user_permissions);
+            unset($user_permissions[$key]);
+        }
+    }
+
+    public function checkLimit(&$msgOptions, &$topicOptions, &$posterOptions, &$message_columns, &$message_parameters): void
+    {
+        $posterId = (int) $posterOptions['id'];
+        $boardId = (int) $topicOptions['board'];
+
+        $entity = $this->service->getEntityByUser($posterId);
+
+        if ($this->service->isLimitReachedByUser($entity, $boardId)) {
+            $errorMessage = $this->service->buildErrorMessage($entity, $posterOptions);
+
+            fatal_lang_error($errorMessage);
+        }
     }
 
     public function updateCount(int $posterId): void

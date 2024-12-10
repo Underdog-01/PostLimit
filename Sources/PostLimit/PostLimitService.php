@@ -51,15 +51,26 @@ class PostLimitService
 
     public function isUserLimited(PostLimitEntity $entity, int $boardId): bool
     {
-        if ($entity->isUserExempted()) {
+        if ($entity->isUserExempted() || !$this->isEnable()) {
             return false;
         }
 
-        $limit = $entity->getPostLimit();
         $boards = $entity->getIdBoards();
+        $globalLimit = $entity->isGlobalLimitApplied();
 
-        return (in_array($boardId, $boards)) ||
-            ($boards != false && $limit >= 1 && $this->utils->setting('enable_global_limit'));
+        if (!$globalLimit) {
+            return in_array($boardId, $boards);
+        }
+
+        return true;
+    }
+
+    public function isLimitReachedByUser(PostLimitEntity $entity, int $boardId): bool
+    {
+        $percentage = $this->calculatePercentage($entity);
+
+        return $this->isUserLimited($entity, $boardId) &&
+            $percentage['postCount'] >= $percentage['limit'];
     }
 
     public function buildErrorMessage(PostLimitEntity $entity, array $posterOptions): string
@@ -116,6 +127,7 @@ class PostLimitService
             'postCountAlert' => $postCountAlert,
             'postsLeft' => $limit - $postCount,
             'limit' => $limit,
+            'postCount' => $postCount
         ];
     }
 
@@ -127,5 +139,19 @@ class PostLimitService
     public function updateCount(int $userId): void
     {
         $this->repository->updateCount($userId);
+    }
+
+    public function checkPermissions(string $permissionName) : bool
+    {
+        return in_array($permissionName, [
+            'post_new',
+            'post_unapproved_topics',
+            'post_unapproved_replies_own',
+            'post_reply_own',
+            'post_reply_any',
+            'post_unapproved_replies_any',
+            'post_attachment',
+            'post_unapproved_attachments',
+        ]);
     }
 }

@@ -96,6 +96,11 @@ class PostLimitEntity
         return $this->postLimit === 0;
     }
 
+    public function isGlobalLimitApplied(): bool
+    {
+        return count($this->getIdBoards()) === 0;
+    }
+
     public function snakeToCamel(string $input): string
     {
         return \lcfirst(\str_replace('_', '', \ucwords($input, '_')));
