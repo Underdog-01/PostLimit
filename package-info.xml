@@ -23,7 +23,7 @@
 		<hook hook="integrate_pre_include" file="$sourcedir/PostLimit/PostLimit.php" />
 		<hook hook="integrate_admin_areas" function="\PostLimit\PostLimitAdmin::menu#" />
 		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissionsHook#" />
-		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::handle#" />
+		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::checkLimit#" />
 		<hook hook="integrate_fetch_alerts" function="\PostLimit\PostLimitAlerts::handle#" />
 		<hook hook="integrate_allowed_to_board" function="\PostLimit\PostLimit::allowBoard#" />
 		<hook hook="integrate_allowed_to_general" function="\PostLimit\PostLimit::allowGeneral#" />
@@ -34,9 +34,9 @@
 
 	<uninstall for="2.0 - 2.0.99">
 		<hook hook="integrate_pre_include" file="$sourcedir/PostLimit/PostLimit.php" reverse="true"/>
-		<hook hook="integrate_admin_areas" function="$sourcedir/PostLimit/PostLimitAdmin.php|\PostLimit\PostLimitAdmin::menu#" reverse="true"/>
-		<hook hook="integrate_load_permissions" function="$sourcedir/PostLimit/PostLimitAdmin.php|\PostLimit\PostLimitAdmin::permissions#" reverse="true"/>
-		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::handle#" reverse="true"/>
+		<hook hook="integrate_admin_areas" function="\PostLimit\PostLimitAdmin::menu#" reverse="true"/>
+		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissionsHook#" reverse="true"/>
+		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::checkLimit#" reverse="true"/>
 		<hook hook="integrate_fetch_alerts" function="\PostLimit\PostLimitAlerts::handle#" reverse="true"/>
 		<hook hook="integrate_allowed_to_board" function="\PostLimit\PostLimit::allowBoard#" reverse="true"/>
 		<hook hook="integrate_allowed_to_general" function="\PostLimit\PostLimit::allowGeneral#" reverse="true"/>
