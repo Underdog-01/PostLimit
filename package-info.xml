@@ -14,7 +14,7 @@
 		<credits url="https://missallsunday.com" license="MPL-2.0" copyright="Michel Mendiola" licenseurl="https://mozilla.org/MPL/2.0/">
 			PostLimit mod
 		</credits>
-		<readme parsebbc="true">readme.txt</readme>
+		<readme>readme.md</readme>
 		<code>installCheck.php</code>
 		<database>install.php</database>
 <!--		<modification>PostLimit.xml</modification>-->
