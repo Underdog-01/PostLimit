@@ -115,7 +115,7 @@ class PostLimit
 
     protected static function reOrderHookCall(PostLimitRepository $repository): void
     {
-        $hookReference = '\PostLimit\PostLimit::handle#';
+        $hookReference = '\PostLimit\PostLimit::checkLimit';
         $hooks = $repository->getAfterPostHooks();
         $explodedHooks = explode(',', $hooks);
 
