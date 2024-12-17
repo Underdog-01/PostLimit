@@ -3,27 +3,49 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>Suki:PostLimit</id>
 	<name>PostLimit</name>
-	<version>1.0</version>
+	<version>1.1</version>
 	<type>modification</type>
-
-	<install for="2.0 - 2.0.99">
-	<readme parsebbc="true">readme.txt</readme>
+	<install for="2.1 - 2.1.99">
+		<license type="inline" parsebbc="false">
+			This Source Code Form is subject to the terms of the Mozilla Public
+			License, v. 2.0. If a copy of the MPL was not distributed with this
+			file, You can obtain one at https://mozilla.org/MPL/2.0/.
+		</license>
+		<credits url="https://missallsunday.com" license="MPL-2.0" copyright="Michel Mendiola" licenseurl="https://mozilla.org/MPL/2.0/">
+			PostLimit mod
+		</credits>
+		<readme>readme.md</readme>
+		<code>installCheck.php</code>
 		<database>install.php</database>
-		<code>hooks.php</code>
-		<modification>PostLimit.xml</modification>
-		<require-file name="PostLimit.php" destination="$sourcedir">Source file</require-file>
-		<require-file name="Subs-PostLimit.php" destination="$sourcedir">Source file</require-file>
-		<require-file name="PostLimit.english.php" destination="$languagedir">Language file</require-file>
-		<require-file name="PostLimit.template.php" destination="$themedir">Template file</require-file>
+<!--		<modification>PostLimit.xml</modification>-->
+		<require-dir name="Themes" destination="$boarddir">Theme files</require-dir>
+		<require-dir name="Sources/PostLimit" destination="$sourcedir">Source files</require-dir>
+		<hook hook="integrate_pre_include" file="$sourcedir/PostLimit/PostLimit.php" />
+		<hook hook="integrate_admin_areas" function="\PostLimit\PostLimitAdmin::menu#" />
+		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissionsHook#" />
+		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::checkLimit#" />
+		<hook hook="integrate_fetch_alerts" function="\PostLimit\PostLimitAlerts::handle#" />
+		<hook hook="integrate_allowed_to_board" function="\PostLimit\PostLimit::allowBoard#" />
+		<hook hook="integrate_allowed_to_general" function="\PostLimit\PostLimit::allowGeneral#" />
+		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" />
+		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimitProfile::setArea#"  />
 		<redirect url="$scripturl?action=admin;area=postlimit" timeout="3000"></redirect>
 	</install>
 
-	<uninstall for="2.0 - 2.0.99">
-		<code>remove.php</code>
+	<uninstall for="2.1 - 2.1.99">
+		<hook hook="integrate_pre_include" file="$sourcedir/PostLimit/PostLimit.php" reverse="true"/>
+		<hook hook="integrate_admin_areas" function="\PostLimit\PostLimitAdmin::menu#" reverse="true"/>
+		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissionsHook#" reverse="true"/>
+		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::checkLimit#" reverse="true"/>
+		<hook hook="integrate_fetch_alerts" function="\PostLimit\PostLimitAlerts::handle#" reverse="true"/>
+		<hook hook="integrate_allowed_to_board" function="\PostLimit\PostLimit::allowBoard#" reverse="true"/>
+		<hook hook="integrate_allowed_to_general" function="\PostLimit\PostLimit::allowGeneral#" reverse="true"/>
+		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" reverse="true"/>
+		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimitProfile::setArea#"  reverse="true"/>
 		<database>install.php</database>
-		<modification reverse="true">PostLimit.xml</modification>
-		<remove-file name="$sourcedir/PostLimit.php" />
-		<remove-file name="$sourcedir/Subs-PostLimit.php" />
+		<code>remove.php</code>
+		<remove-dir name="$sourcedir/PostLimit" />
+		<remove-file name="$sourcedir/tasks/PostLimitNotify.php" />
 		<remove-file name="$languagedir/PostLimit.english.php" />
 		<remove-file name="$themedir/PostLimit.template.php" />
 	</uninstall>
