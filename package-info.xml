@@ -25,7 +25,6 @@
 		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissionsHook#" />
 		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::checkLimit#" />
 		<hook hook="integrate_fetch_alerts" function="\PostLimit\PostLimitAlerts::handle#" />
-		<hook hook="integrate_allowed_to_board" function="\PostLimit\PostLimit::allowBoard#" />
 		<hook hook="integrate_allowed_to_general" function="\PostLimit\PostLimit::allowGeneral#" />
 		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" />
 		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimitProfile::setArea#"  />
@@ -38,7 +37,6 @@
 		<hook hook="integrate_load_permissions" function="\PostLimit\PostLimitAdmin::permissionsHook#" reverse="true"/>
 		<hook hook="integrate_after_create_post" function="\PostLimit\PostLimit::checkLimit#" reverse="true"/>
 		<hook hook="integrate_fetch_alerts" function="\PostLimit\PostLimitAlerts::handle#" reverse="true"/>
-		<hook hook="integrate_allowed_to_board" function="\PostLimit\PostLimit::allowBoard#" reverse="true"/>
 		<hook hook="integrate_allowed_to_general" function="\PostLimit\PostLimit::allowGeneral#" reverse="true"/>
 		<hook hook="integrate_post_register" function="\PostLimit\PostLimit::createCount#" reverse="true"/>
 		<hook hook="integrate_profile_areas" function="\PostLimit\PostLimitProfile::setArea#"  reverse="true"/>
