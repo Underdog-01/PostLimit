@@ -45,7 +45,6 @@
 		<database>install.php</database>
 		<code>remove.php</code>
 		<remove-dir name="$sourcedir/PostLimit" />
-		<remove-file name="$sourcedir/tasks/PostLimitNotify.php" />
 		<remove-file name="$languagedir/PostLimit.english.php" />
 		<remove-file name="$themedir/PostLimit.template.php" />
 	</uninstall>
