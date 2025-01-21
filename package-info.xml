@@ -20,7 +20,7 @@
 <!--		<modification>PostLimit.xml</modification>-->
 		<require-dir name="Themes" destination="$boarddir">Theme files</require-dir>
 		<require-dir name="Sources/PostLimit" destination="$sourcedir">Source files</require-dir>
-		<hook hook="integrate_autoload" function="autoload" file="$sourcedir/PostLimit/autoload.php" />
+		<hook hook="integrate_autoload" function="postLimitAutoload" file="$sourcedir/PostLimit/autoload.php" />
 		<hook hook="integrate_admin_areas" function="PostLimit\PostLimitAdmin::menu#" />
 		<hook hook="integrate_load_permissions" function="PostLimit\PostLimitAdmin::permissionsHook#" />
 		<hook hook="integrate_after_create_post" function="PostLimit\PostLimit::checkLimit#" />
@@ -32,7 +32,7 @@
 	</install>
 
 	<uninstall for="2.1 - 2.1.99">
-		<hook hook="integrate_autoload" function="autoload" file="$sourcedir/PostLimit/autoload.php" reverse="true"/>
+		<hook hook="integrate_autoload" function="postLimitAutoload" file="$sourcedir/PostLimit/autoload.php" reverse="true"/>
 		<hook hook="integrate_admin_areas" function="PostLimit\PostLimitAdmin::menu#" reverse="true"/>
 		<hook hook="integrate_load_permissions" function="PostLimit\PostLimitAdmin::permissionsHook#" reverse="true"/>
 		<hook hook="integrate_after_create_post" function="PostLimit\PostLimit::checkLimit#" reverse="true"/>

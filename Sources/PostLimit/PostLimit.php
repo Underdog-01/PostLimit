@@ -14,15 +14,6 @@ declare(strict_types=1);
 
 namespace PostLimit;
 
-// No DI :(
-require 'PostLimitService.php';
-require 'PostLimitAdmin.php';
-require 'PostLimitUtils.php';
-require 'PostLimitEntity.php';
-require 'PostLimitRepository.php';
-require 'PostLimitProfile.php';
-require 'PostLimitAlerts.php';
-
 class PostLimit
 {
     public const NAME = 'PostLimit';

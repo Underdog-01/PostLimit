@@ -1,6 +1,6 @@
 <?php
 
-function autoload(&$classMap): void
+function postLimitAutoload(&$classMap): void
 {
     $classMap['PostLimit\\'] = 'PostLimit/';
 }
