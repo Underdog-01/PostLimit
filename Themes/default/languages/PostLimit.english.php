@@ -83,9 +83,8 @@ $txt['PostLimit_message_cannot_own'] = 'You cannot set your own limit';
 $txt['PostLimit_message_cannot_general'] = 'Post Limit warning: %s';
 
 /* Scheduled Task */
-$taskName = '\PostLimit\PostLimit::s';
-$txt['scheduled_task_' . $taskName] = 'Post Limit mod';
-$txt['scheduled_task_desc_' . $taskName] = 'Resets the post limit of every user down to 0.';
+$txt['scheduled_task_post_limit'] = 'Post Limit mod';
+$txt['scheduled_task_desc_post_limit'] = 'Resets the post limit of every user down to 0.';
 
 // Alert text
 $txt['PostLimit_alert_text'] = 'You have reached {percentage}% of your {limit} {frequency} limit. You have {postsLeft} left.';
