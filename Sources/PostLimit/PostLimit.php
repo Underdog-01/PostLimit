@@ -89,7 +89,7 @@ class PostLimit
         }
     }
 
-    public function checkLimit(&$msgOptions, &$topicOptions, &$posterOptions, &$message_columns, &$message_parameters): void
+    public function checkLimit($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters): void
     {
         $posterId = (int) $posterOptions['id'];
         $boardId = (int) $topicOptions['board'];
@@ -135,3 +135,6 @@ class PostLimit
         $repository->updateAfterPostHooks(trim(implode(',', array_map('trim', $explodedHooks))));
     }
 }
+
+
+
