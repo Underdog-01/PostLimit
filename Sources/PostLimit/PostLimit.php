@@ -27,8 +27,7 @@ class PostLimit
         $this->service = new PostLimitService();
     }
 
-    // scheduled_tasks task column has a 24 char limit :(
-    public static function s(): bool
+    public static function scheduled(): bool
     {
         $repository = new PostLimitRepository();
         $repository->resetPostCount();
@@ -106,7 +105,7 @@ class PostLimit
 
     protected static function reOrderHookCall(PostLimitRepository $repository): void
     {
-        $hookReference = '\PostLimit\PostLimit::checkLimit';
+        $hookReference = 'PostLimit\PostLimit::checkLimit';
         $hooks = $repository->getAfterPostHooks();
         $explodedHooks = explode(',', $hooks);
 
