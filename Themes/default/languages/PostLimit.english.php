@@ -4,8 +4,8 @@
  * Post Limit mod (SMF)
  *
  * @package SMF
- * @author Suki <missallsunday@simplemachines.org>
- * @copyright 2019 Jessica González
+ * @author Suki <suki@missallsunday.com>
+ * @copyright 2025 Michel Mendiola
  * @license http://www.mozilla.org/MPL/ MPL 2.0
  *
  * @version 1.1

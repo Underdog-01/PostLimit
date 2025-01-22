@@ -4,28 +4,16 @@
  * Post Limit mod (SMF)
  *
  * @package SMF
- * @author Suki <missallsunday@simplemachines.org>
- * @copyright 2019 Jessica González
+ * @author Suki <suki@missallsunday.com>
+ * @copyright 2025 Michel Mendiola
  * @license http://www.mozilla.org/MPL/ MPL 2.0
  *
  * @version 1.1
  */
 
-/*
- * Version: MPL 2.0
- *
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file,
- * You can obtain one at http://mozilla.org/MPL/2.0/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- */
 
 use PostLimit\PostLimit;
+use PostLimit\PostLimitEntity as PostLimitEntity;
 
 if (!defined('SMF')) {
     die('Hacking attempt...');
@@ -61,7 +49,7 @@ function template_postLimit_profile_page()
             <dd>
                 <input 
                     type="text"
-                    name="', \PostLimit\PostLimitEntity::POST_LIMIT ,'" 
+                    name="', PostLimitEntity::POST_LIMIT ,'" 
                     size="5" 
                     tabindex="1" 
                     maxlength="5" 
@@ -73,7 +61,7 @@ function template_postLimit_profile_page()
             </dt>
             <dd>
                 <input type="text" 
-                    name="', \PostLimit\PostLimitEntity::ID_BOARDS ,'" 
+                    name="', PostLimitEntity::ID_BOARDS ,'" 
                     size="50" 
                     tabindex="1" 
                     maxlength="25" 
