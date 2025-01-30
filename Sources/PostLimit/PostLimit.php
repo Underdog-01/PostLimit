@@ -27,7 +27,7 @@ class PostLimit
         $this->service = new PostLimitService();
     }
 
-    public static function scheduled(): bool
+    public static function s(): bool
     {
         $repository = new PostLimitRepository();
         $repository->resetPostCount();
