@@ -39,7 +39,7 @@ class PostLimitAdmin
         $admin_areas['config']['areas'][strtolower(PostLimit::NAME)] = array(
             'label' => $this->utils->text('admin_panel'),
             'function' => [$this, 'main'],
-            'icon' => 'posts',
+            'icon' => 'security',
             'subsections' => [
                 self::SETTINGS => [$this->utils->text('admin_settings')],
                 self::PERMISSIONS => [$this->utils->text('admin_permissions')],
