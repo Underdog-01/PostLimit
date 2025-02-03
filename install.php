@@ -82,6 +82,6 @@ $smcFunc['db_insert'](
         'callable' => 'string',
     ],
 
-    [0,0,0,1,'d',0,'post_limit', '$sourcedir\PostLimit\PostLimit.php|PostLimit\PostLimit::s'],
+    [0,0,0,1,'d',0,'post_limit', '$sourcedir/PostLimit/PostLimit.php|PostLimit\PostLimit::s'],
     ['task']
 );
