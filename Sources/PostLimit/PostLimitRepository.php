@@ -11,6 +11,8 @@ class PostLimitRepository
     protected const SETTINGS_TABLE_NAME = 'settings';
     protected const ALERTS_TABLE_NAME = 'user_alerts';
 
+    protected const HOOK_NAME = 'integrate_create_post';
+
     public function __construct()
     {
         $this->db = $GLOBALS['smcFunc'];
@@ -151,7 +153,7 @@ class PostLimitRepository
         updateMemberData($backgroundTaskDetails['idUser'], array('alerts' => '+'));
     }
 
-    public function getAfterPostHooks(): string
+    public function getCreatePostHooks(): string
     {
         $hooks = '';
         $request = $this->db['db_query'](
@@ -163,7 +165,7 @@ class PostLimitRepository
                 'value' => 'value',
                 'from' => self::SETTINGS_TABLE_NAME,
                 'columnName' => 'variable',
-                'hookName' => 'integrate_after_create_post'
+                'hookName' => self::HOOK_NAME
             ]
         );
 
@@ -174,7 +176,7 @@ class PostLimitRepository
         return $hooks[0];
     }
 
-    public function updateAfterPostHooks(string $hooks): void
+    public function updateCreatePostHooks(string $hooks): void
     {
         $this->db['db_query'](
             '',
@@ -186,7 +188,7 @@ class PostLimitRepository
                 'value' => 'value',
                 'updatedValue' => $hooks,
                 'columnName' => 'variable',
-                'hookName' => 'integrate_after_create_post'
+                'hookName' => self::HOOK_NAME
             ]
         );
     }

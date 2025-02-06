@@ -23,7 +23,8 @@
 		<hook hook="integrate_autoload" function="postLimitAutoload" file="$sourcedir/PostLimit/autoload.php" />
 		<hook hook="integrate_admin_areas" function="PostLimit\PostLimitAdmin::menu#" />
 		<hook hook="integrate_load_permissions" function="PostLimit\PostLimitAdmin::permissionsHook#" />
-		<hook hook="integrate_after_create_post" function="PostLimit\PostLimit::checkLimit#" />
+		<hook hook="integrate_create_post" function="PostLimit\PostLimit::checkLimit#" />
+		<hook hook="integrate_after_create_post" function="PostLimit\PostLimit::checkAlert#" />
 		<hook hook="integrate_fetch_alerts" function="PostLimit\PostLimitAlerts::handle#" />
 		<hook hook="integrate_allowed_to_general" function="PostLimit\PostLimit::allowGeneral#" />
 		<hook hook="integrate_post_register" function="PostLimit\PostLimit::createCount#" />
@@ -35,7 +36,8 @@
 		<hook hook="integrate_autoload" function="postLimitAutoload" file="$sourcedir/PostLimit/autoload.php" reverse="true"/>
 		<hook hook="integrate_admin_areas" function="PostLimit\PostLimitAdmin::menu#" reverse="true"/>
 		<hook hook="integrate_load_permissions" function="PostLimit\PostLimitAdmin::permissionsHook#" reverse="true"/>
-		<hook hook="integrate_after_create_post" function="PostLimit\PostLimit::checkLimit#" reverse="true"/>
+		<hook hook="integrate_create_post" function="PostLimit\PostLimit::checkLimit#" reverse="true"/>
+		<hook hook="integrate_after_create_post" function="PostLimit\PostLimit::checkAlert#" reverse="true"/>
 		<hook hook="integrate_fetch_alerts" function="PostLimit\PostLimitAlerts::handle#" reverse="true"/>
 		<hook hook="integrate_allowed_to_general" function="PostLimit\PostLimit::allowGeneral#" reverse="true"/>
 		<hook hook="integrate_post_register" function="PostLimit\PostLimit::createCount#" reverse="true"/>

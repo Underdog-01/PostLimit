@@ -41,26 +41,6 @@ class PostLimit
         return true;
     }
 
-    public function handle($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters): void
-    {
-        $posterId = (int) $posterOptions['id'];
-        $boardId = (int) $topicOptions['board'];
-
-        if (!$this->service->isEnable() || $posterId === 0) {
-            return;
-        }
-
-        $this->updateCount($posterId);
-
-        $entity = $this->service->getEntityByUser($posterId);
-
-        if (!$this->service->isUserLimited($entity, $boardId)) {
-            return;
-        }
-
-        $this->service->buildAlert($entity);
-    }
-
     public function allowGeneral(&$user_permissions, array $permission)
     {
         global $user_info, $board_info;
@@ -83,7 +63,6 @@ class PostLimit
     {
         $posterId = (int) $posterOptions['id'];
         $boardId = (int) $topicOptions['board'];
-
         $entity = $this->service->getEntityByUser($posterId);
 
         if ($this->service->isLimitReachedByUser($entity, $boardId)) {
@@ -93,9 +72,14 @@ class PostLimit
         }
     }
 
-    public function updateCount(int $posterId): void
+    public function checkAlert($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters): void
     {
+        $posterId = (int) $posterOptions['id'];
+
         $this->service->updateCount($posterId);
+        $entity = $this->service->getEntityByUser($posterId);
+
+        $this->service->buildAlert($entity);
     }
 
     public function createCount(&$regOptions, &$theme_vars, &$memberID)
@@ -106,7 +90,7 @@ class PostLimit
     protected static function reOrderHookCall(PostLimitRepository $repository): void
     {
         $hookReference = 'PostLimit\PostLimit::checkLimit';
-        $hooks = $repository->getAfterPostHooks();
+        $hooks = $repository->getCreatePostHooks();
         $explodedHooks = explode(',', $hooks);
 
         if (count($explodedHooks) <= 1) {
@@ -122,7 +106,7 @@ class PostLimit
         unset($explodedHooks[$key]);
         $explodedHooks[] = $hookReference;
 
-        $repository->updateAfterPostHooks(trim(implode(',', array_map('trim', $explodedHooks))));
+        $repository->updateCreatePostHooks(trim(implode(',', array_map('trim', $explodedHooks))));
     }
 }
 

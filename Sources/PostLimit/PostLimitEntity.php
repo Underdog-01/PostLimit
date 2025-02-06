@@ -98,7 +98,7 @@ class PostLimitEntity
 
     public function isGlobalLimitApplied(): bool
     {
-        return count($this->getIdBoards()) === 0;
+        return empty($this->idBoards);
     }
 
     public function snakeToCamel(string $input): string
