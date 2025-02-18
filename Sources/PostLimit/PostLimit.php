@@ -27,13 +27,19 @@ class PostLimit
         $this->service = new PostLimitService();
     }
 
-    public static function s(): bool
+    public function s(): bool
     {
+        global $sourcedir;
+
+        // Need to make sure we loaded these bad boys when running on cron.php
+        require_once($sourcedir . '/PostLimit/PostLimitRepository.php');
+        require_once($sourcedir . '/PostLimit/PostLimitEntity.php');
+
         $repository = new PostLimitRepository();
         $repository->resetPostCount();
 
         // Make sure we are the last hook call, don't ask, just sage nod and move on
-        self::reOrderHookCall($repository);
+        $this->reOrderHookCall($repository);
 
         //No point in keeping alerts
         $repository->deleteAllAlerts();
@@ -87,7 +93,7 @@ class PostLimit
         $this->service->createDefaultEntity((int) $memberID);
     }
 
-    protected static function reOrderHookCall(PostLimitRepository $repository): void
+    protected function reOrderHookCall(PostLimitRepository $repository): void
     {
         $hookReference = 'PostLimit\PostLimit::checkLimit';
         $hooks = $repository->getCreatePostHooks();
