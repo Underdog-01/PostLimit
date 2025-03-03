@@ -18,6 +18,7 @@ class PostLimitAlerts
             if ($alert['content_type'] === strtolower(PostLimit::NAME)) {
                 $postLimitAlert = $alert;
                 $refId = $id;
+                break;
             }
         }
 
@@ -35,7 +36,7 @@ class PostLimitAlerts
         $alertPercentage = $this->service->calculatePercentage($entity);
 
         if ($alertPercentage['postsLeft'] <= 0) {
-            return $this->service->utils->text('alert_text_limit_reached');
+            return $this->service->buildErrorMessage($entity, $postLimitAlert['sender_name']);
         }
 
         return strtr($this->service->utils->text('alert_text'),

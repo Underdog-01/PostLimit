@@ -19,12 +19,12 @@ class PostLimit
     public const NAME = 'PostLimit';
     public const DEFAULT_PERCENTAGE_TO_ALERT = 80;
     public const DEFAULT_POST_LIMIT = 0;
-    private PostLimitService $service;
+    protected PostLimitService $service;
 
-    public function __construct()
+    public function __construct(?PostLimitService $service = null)
     {
         //No DI :(
-        $this->service = new PostLimitService();
+        $this->service = $service ?? new PostLimitService();
     }
 
     public function s(): bool
@@ -72,7 +72,7 @@ class PostLimit
         $entity = $this->service->getEntityByUser($posterId);
 
         if ($this->service->isLimitReachedByUser($entity, $boardId)) {
-            $errorMessage = $this->service->buildErrorMessage($entity, $posterOptions);
+            $errorMessage = $this->service->buildErrorMessage($entity, $posterOptions['name']);
 
             fatal_lang_error($errorMessage);
         }

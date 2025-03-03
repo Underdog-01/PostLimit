@@ -73,10 +73,10 @@ class PostLimitService
             $percentage['postCount'] >= $percentage['limit'];
     }
 
-    public function buildErrorMessage(PostLimitEntity $entity, array $posterOptions): string
+    public function buildErrorMessage(PostLimitEntity $entity, string $userName): string
     {
         $replacements = [
-            'username' => $posterOptions['name'],
+            'username' => $userName,
             'limit' => $entity->getPostLimit(),
         ];
 
