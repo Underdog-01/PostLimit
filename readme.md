@@ -34,7 +34,7 @@ Users who have their limit set at 0 (by default is 0) won't be limited
 - Fixed some of the grammar
 - Removed autoload hook and file
 
-1.1 Dec 2024
+1.1.0 Dec 2024
 - Add support for the SMF 2.1 branch
 - Removed the global limit setting
 - Added sending an alert when the user is reaching his/her limit
