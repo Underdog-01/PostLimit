@@ -118,7 +118,7 @@ class PostLimit
 
 	public static function removeAllDataInfo(): void
 	{
-		global $txt, $context;
+		global $context;
 
 		// custom remove all data info
 		foreach(array('action', 'area', 'sa', 'package') as $request) {

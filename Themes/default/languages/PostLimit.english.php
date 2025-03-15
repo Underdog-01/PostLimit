@@ -25,7 +25,7 @@
  *
  */
 
- global $helptxt, $txt;
+ global $txt;
 
 /* Admin panel */
 $txt['PostLimit_message_default'] = 'Hi {username}, you have reached your post limit for today.';
@@ -35,27 +35,66 @@ $txt['PostLimit_admin_settings'] = 'Settings';
 $txt['PostLimit_admin_permissions'] = 'Permissions';
 $txt['PostLimit_enable'] = 'Enable Post Limit Modification';
 $txt['PostLimit_post_count_alert'] = 'Post Percentage Limit Alert';
-$txt['PostLimit_post_count_alert_help'] = 'When the user has reached [X] percentage of posts before hitting the post limit,
- an alert will be sent giving indication that they have [X] amount of posts left.<br>
-It is based on a percentage value due to varied post limit per member.
-For example, if a member has a 10 post limit, and you configure this setting to 80%,
- the member will receive an alert on his/her 8th post, indicating that they only have 2 more posts left. Default is 80';
-$txt['PostLimit_enable_help'] = 'This setting must be enabled for this modification to function.';
+$txt['PostLimit_post_count_alert_help'] = '
+<div style="font-size: smaller;padding-bottom: 1rem;">
+	When the user has reached [X] percentage of posts before hitting the post limit, an alert will be sent giving indication that they have [X] amount of posts left.
+	<div>
+		This setting is based on a percentage value due to variable post limits per member.
+	</div>
+</div>
+<div style="font-size: smaller;padding-bottom: 1rem;">
+	<div>
+		For example, if you configure this setting to 80%, and a member has a 10 post limit, the member will receive an alert on his/her 8th post.
+	</div>
+	<div>
+		This will give them an indicatation that they only have 2 more posts left (default is 80).
+	</div>
+</div>';
+$txt['PostLimit_enable_help'] = '
+<div style="font-size: smaller;">
+	This setting must be enabled for this modification to function.
+</div>';
 $txt['PostLimit_custom_message'] = 'Custom Message';
-$txt['PostLimit_custom_message_help'] = 'Write a custom message which the member will see when they have reached their posting limit<br>
-you can use the following placeholder tokens to personalize the message even more:<br>
-- {username} will display the display name of the user who will receive the message<br>
-- {limit} will display the amount of messages this particular user can make<br>
- If you leave this message empty, the default message will appear:<br><i>'. $txt['PostLimit_message_default'] .'</i>';
+$txt['PostLimit_custom_message_help'] = '
+<div style="font-size: smaller;padding-bottom: 1rem;">
+	Write a custom message for members that have reached their posting limit.
+</div>
+<div style="font-size: smaller;padding-bottom: 1rem;">
+	You can use the following placeholder tokens to personalize the message even more:
+	<div>
+		- {username} will display the display name of the user who will receive the message
+	</div>
+	<div>
+		- {limit} will display the amount of messages this particular user can make
+	</div>
+</div>
+<div style="font-size: smaller;padding-bottom: 1rem;">
+	If you leave this message empty, the default message will appear:<br><i>'. $txt['PostLimit_message_default'] .'</i>
+</div>';
 $txt['PostLimit_alert_message_default'] = 'Hi {username}! you have reached {percentage}% of the total amount you are allowed to post for today.';
 $txt['PostLimit_custom_alert_message'] = 'Custom Alert Message';
-$txt['PostLimit_custom_alert_message_help'] = 'Create a custom alert message which the user will see when they have reached their "Post Percentage Limit",
-you can use the following placeholder tokens to personalize the message even more:<br>
-- {username} will display the display name of the user who will receive the message<br>
-- {limit} will display the amount of messages this particular user can make.<br>
-- {percentage} will show the percentage the user has reached.<br>
-- {post_left} The amount of posts the user can make before reaching their limit.<br>
- If you leave this message empty, the default message will appear:<br><i>'. $txt['PostLimit_alert_message_default'] .'</i>';
+$txt['PostLimit_custom_alert_message_help'] = '
+<div style="font-size: smaller;padding-bottom: 1rem;">
+	Create a custom alert message which the user will see when they have reached their "Post Percentage Limit".
+	<div>
+		You can use the following placeholder tokens to personalize the message even more:
+	</div>
+	<div>
+		- {username} will display the display name of the user who will receive the message
+	</div>
+	<div>
+		- {limit} will display the amount of messages this particular user can make.
+	</div>
+	<div>
+		- {percentage} will show the percentage the user has reached.
+	</div>
+	<div>
+		- {post_left} The amount of posts the user can make before reaching their limit.
+	</div>
+</div>
+<div style="font-size: smaller;padding-bottom: 1rem;">
+	If you leave this message empty, the default message will appear:<br><i>'. $txt['PostLimit_alert_message_default'] .'</i>
+</div>';
 $txt['PostLimit_profile_panel'] = 'Post Limit profile panel';
 $txt['PostLimit_profile_panel_sub'] = 'You can set the post limit and the boards this limit will be applied for this user here';
 
