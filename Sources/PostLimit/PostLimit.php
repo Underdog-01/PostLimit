@@ -130,6 +130,7 @@ class PostLimit
 			$context['html_headers'] .= '
 			<script>
 				$(document).ready(function(){
+					$("#db_changes_div > ul.normallist li").remove();
 					$("#db_changes_div > ul.normallist").append("<li>' . $lang->text('uninstall_db') . '</li>");
 					$("#db_changes_div > ul.normallist").append("<li>' . $lang->text('uninstall_files') . '</li>");
 					$("#db_changes_div").append(\'<span style="font-weight: bold;">' . $lang->text('uninstall_warning') . '</span>\');
