@@ -3,7 +3,8 @@
 ###### Description:
 
 This mod allows you to set a per user post limit, the limit is set per day (although you can change this by changing its corresponding scheduled task).
-If the user is approaching his/her limit, there will be an alert informing them about it, you can configure this message with some predefined variable placeholders: {username} {limit}.
+If the user is approaching his/her limit, there will be an alert message informing them about it.
+This alert message can be configured using some predefined variable placeholders: {username} {limit}.
 
 You can set a permission for members to be able to set limits on other users, admins cannot be limited.
 
