@@ -23,7 +23,7 @@ class PostLimitRepository
 			'','
 			DELETE
 			FROM {db_prefix}' . PostLimitEntity::TABLE . '
-		    WHERE id_user = {int:userid}',
+			WHERE id_user = {int:userid}',
 			['userid' => $entity->toArray()['idUser']]
 		);
 
