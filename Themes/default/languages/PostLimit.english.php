@@ -25,43 +25,43 @@
  *
  */
 
- global $txt;
+ global $helptxt, $txt;
 
 /* Admin panel */
-$txt['PostLimit_message_default'] = 'Hi {username}, you don\'t have any more messages left for today.';
+$txt['PostLimit_message_default'] = 'Hi {username}, you have reached your post limit for today.';
 $txt['PostLimit_admin_panel'] = 'Post Limit admin panel';
 $txt['PostLimit_admin_panel_desc'] = 'From here you can set some global settings and permissions for Post Limit mod';
 $txt['PostLimit_admin_settings'] = 'Settings';
 $txt['PostLimit_admin_permissions'] = 'Permissions';
-$txt['PostLimit_enable'] = 'Enable the mod';
-$txt['PostLimit_post_count_alert'] = 'Percentage of post reached for sending an alert';
-$txt['PostLimit_post_count_alert_sub'] = 'When the user has reached X amount of posts before hitting the post limit,
- an alert will be sent indicating the users they have X amount of posts left.<br />
-It is based on percentage due to post limit being per user. 
-For example, if a user has a 10 post limit, and you set this setting to 80%,
- the user will receive an alert on his/her 8th post, indicating they only have 2 more posts left. Default is 80';
-$txt['PostLimit_enable_sub'] = 'This Setting must be on for the mod to work properly.';
-$txt['PostLimit_custom_message'] = 'Put your custom message here';
-$txt['PostLimit_custom_message_sub'] = 'Write a custom message the user will see when they have reached theor posting limit<br /> 
-you can use the following tokens to personalize the message even more:<br />
-- {username} will display the display name of the user who will receive the message<br />
-- {limit} will display the amount of messages this particular user can make.<br />
- If you leave this message empty, the default message will appear:<br /><i>'. $txt['PostLimit_message_default'] .'</i>';
+$txt['PostLimit_enable'] = 'Enable Post Limit Modification';
+$txt['PostLimit_post_count_alert'] = 'Post Percentage Limit Alert';
+$txt['PostLimit_post_count_alert_help'] = 'When the user has reached [X] percentage of posts before hitting the post limit,
+ an alert will be sent giving indication that they have [X] amount of posts left.<br>
+It is based on a percentage value due to varied post limit per member.
+For example, if a member has a 10 post limit, and you configure this setting to 80%,
+ the member will receive an alert on his/her 8th post, indicating that they only have 2 more posts left. Default is 80';
+$txt['PostLimit_enable_help'] = 'This setting must be enabled for this modification to function.';
+$txt['PostLimit_custom_message'] = 'Custom Message';
+$txt['PostLimit_custom_message_help'] = 'Write a custom message which the member will see when they have reached their posting limit<br>
+you can use the following placeholder tokens to personalize the message even more:<br>
+- {username} will display the display name of the user who will receive the message<br>
+- {limit} will display the amount of messages this particular user can make<br>
+ If you leave this message empty, the default message will appear:<br><i>'. $txt['PostLimit_message_default'] .'</i>';
 $txt['PostLimit_alert_message_default'] = 'Hi {username}! you have reached {percentage}% of the total amount you are allowed to post for today.';
-$txt['PostLimit_custom_alert_message'] = 'Put your custom alert message here';
-$txt['PostLimit_custom_alert_message_sub'] = 'Write a custom alert message the user will see when they reached the percentage to show an alert, 
-you can use the following tokens to personalize the message even more<br />
-- {username} will display the display name of the user who will receive the message<br />
-- {limit} will display the amount of messages this particular user can make.<br />
-- {percentage} will show the percentage the user has reached.<br />
-- {post_left} The amount of posts the user can make before reaching their limit.<br />
- If you leave this message empty, the default message will appear:<br /><i>'. $txt['PostLimit_alert_message_default'] .'</i>';
+$txt['PostLimit_custom_alert_message'] = 'Custom Alert Message';
+$txt['PostLimit_custom_alert_message_help'] = 'Create a custom alert message which the user will see when they have reached their "Post Percentage Limit",
+you can use the following placeholder tokens to personalize the message even more:<br>
+- {username} will display the display name of the user who will receive the message<br>
+- {limit} will display the amount of messages this particular user can make.<br>
+- {percentage} will show the percentage the user has reached.<br>
+- {post_left} The amount of posts the user can make before reaching their limit.<br>
+ If you leave this message empty, the default message will appear:<br><i>'. $txt['PostLimit_alert_message_default'] .'</i>';
 $txt['PostLimit_profile_panel'] = 'Post Limit profile panel';
 $txt['PostLimit_profile_panel_sub'] = 'You can set the post limit and the boards this limit will be applied for this user here';
 
 /* Messages */
-$txt['PostLimit_message_overlimit'] = 'You don\'t have any more messages left, your limit is: %d';
-$txt['PostLimit_message'] = 'You have %d message left today';
+$txt['PostLimit_message_overlimit'] = 'You have already exceeded the daily post limit, your limit is: %d';
+$txt['PostLimit_message'] = 'You have %d messages remaining in your post limit for today';
 $txt['PostLimit_message_title'] = 'Attention %s!';
 
 /* Profile fields */
@@ -69,7 +69,7 @@ $txt['PostLimit_profile_userlimit'] = 'Post Limit';
 $txt['PostLimit_profile_userlimit_desc'] = 'You can put any number, if empty, this user will not be limited.';
 $txt['PostLimit_profile_boards'] = 'Board IDs';
 $txt['PostLimit_profile_boards_desc'] = 'Write the board Id\'s where this user will be limited, comma separated, example: 1,2,3,4
-<br /> If leave empty, and a post limit is set, the user will be limited on all boards';
+<br> If leave empty, and a post limit is set, the user will be limited on all boards';
 
 /* Permissions strings */
 $txt['cannot_can_set_post_limit'] = 'I\'m sorry, you are not allowed to set post limits.';
@@ -87,6 +87,11 @@ $txt['scheduled_task_post_limit'] = 'Post Limit mod';
 $txt['scheduled_task_desc_post_limit'] = 'Resets the post limit of every user down to 0.';
 
 // Alert text
-$txt['PostLimit_alert_text'] = 'You have reached {percentage}% of your {limit} {frequency} limit. You have {postsLeft} left.';
+$txt['PostLimit_alert_text'] = 'You have reached {percentage}% of your {limit} {frequency} limit. You have {postsLeft} remaining.';
 $txt['PostLimit_alert_frequency'] = 'daily posts';
 $txt['PostLimit_alert_text_limit_reached'] = 'You have reached your ' . $txt['PostLimit_alert_frequency'] . ' limit.';
+
+// Uninstall all data warning
+$txt['PostLimit_uninstall_db'] = 'Removes all database entries made by Post Limit';
+$txt['PostLimit_uninstall_files'] = 'Removes all files and folders including custom images for Post Limit';
+$txt['PostLimit_uninstall_warning'] = 'Activating the above checkbox will perform these actions and is not reversable!';

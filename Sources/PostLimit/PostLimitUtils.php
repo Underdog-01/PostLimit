@@ -16,75 +16,75 @@ namespace PostLimit;
 
 class PostLimitUtils
 {
-    public function sanitize($variable)
-    {
-        global $smcFunc;
+	public function sanitize($variable)
+	{
+		global $smcFunc;
 
-        if (is_array($variable)) {
-            foreach ($variable as $key => $variableValue) {
-                $variable[$key] = $this->sanitize($variableValue);
-            }
+		if (is_array($variable)) {
+			foreach ($variable as $key => $variableValue) {
+				$variable[$key] = $this->sanitize($variableValue);
+			}
 
-            return array_filter($variable);
-        }
+			return array_filter($variable);
+		}
 
-        $var = $smcFunc['htmlspecialchars'](
-            $smcFunc['htmltrim']((string) $variable),
-            \ENT_QUOTES
-        );
+		$var = $smcFunc['htmlspecialchars'](
+			$smcFunc['htmltrim']((string) $variable),
+			\ENT_QUOTES
+		);
 
-        if (ctype_digit($var)) {
-            $var = (int) $var;
-        }
+		if (ctype_digit($var)) {
+			$var = (int) $var;
+		}
 
-        return $var;
-    }
+		return $var;
+	}
 
-    public function request(string $key)
-    {
-        return $this->isRequestSet($key) ? $this->sanitize($_REQUEST[$key]) : null;
-    }
+	public function request(string $key)
+	{
+		return $this->isRequestSet($key) ? $this->sanitize($_REQUEST[$key]) : null;
+	}
 
-    public function isRequestSet(string $key): bool
-    {
-        return isset($_REQUEST[$key]);
-    }
+	public function isRequestSet(string $key): bool
+	{
+		return isset($_REQUEST[$key]);
+	}
 
-    public function text(string $textKey = ''): string
-    {
-        global $txt;
+	public function text(string $textKey = ''): string
+	{
+		global $txt;
 
-        $fullKey = PostLimit::NAME . '_' . $textKey;
+		$fullKey = PostLimit::NAME . '_' . $textKey;
 
-        if (empty($txt[$fullKey])) {
-            loadLanguage(PostLimit::NAME);
-        }
+		if (empty($txt[$fullKey])) {
+			loadLanguage(PostLimit::NAME);
+		}
 
-        return $txt[$fullKey] ?? '';
-    }
+		return $txt[$fullKey] ?? '';
+	}
 
-    public function setting(string $settingKey = '', $defaultValue = false)
-    {
-        global $modSettings;
+	public function setting(string $settingKey = '', $defaultValue = false)
+	{
+		global $modSettings;
 
-        $fullKey = PostLimit::NAME . '_' . $settingKey;
+		$fullKey = PostLimit::NAME . '_' . $settingKey;
 
-        return !empty($modSettings[$fullKey]) ?
-            (ctype_digit($modSettings[$fullKey]) ? ((int) $modSettings[$fullKey]) : $modSettings[$fullKey]) :
-            $defaultValue;
-    }
+		return !empty($modSettings[$fullKey]) ?
+			(ctype_digit($modSettings[$fullKey]) ? ((int) $modSettings[$fullKey]) : $modSettings[$fullKey]) :
+			$defaultValue;
+	}
 
-    public function setContext(array $values): void
-    {
-        global $context;
+	public function setContext(array $values): void
+	{
+		global $context;
 
-        foreach ($values as $key => $value) {
-            $context[$key] = $value;
-        }
-    }
+		foreach ($values as $key => $value) {
+			$context[$key] = $value;
+		}
+	}
 
-    public function calculatePercentage($number, $total): int
-    {
-        return $total <= 0 ? 0 : (int) round(($number / $total) * 100);
-    }
+	public function calculatePercentage($number, $total): int
+	{
+		return $total <= 0 ? 0 : (int) round(($number / $total) * 100);
+	}
 }

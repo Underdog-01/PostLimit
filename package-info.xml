@@ -3,9 +3,9 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>Suki:PostLimit</id>
 	<name>PostLimit</name>
-	<version>1.1</version>
+	<version>1.1.1</version>
 	<type>modification</type>
-	<install for="2.1 - 2.1.99">
+	<install for="2.0.98 - 2.1.98">
 		<license type="inline" parsebbc="false">
 			This Source Code Form is subject to the terms of the Mozilla Public
 			License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -16,37 +16,18 @@
 		</credits>
 		<readme>readme.md</readme>
 		<code>installCheck.php</code>
-		<database>install.php</database>
+		<code>install.php</code>
 <!--		<modification>PostLimit.xml</modification>-->
 		<require-dir name="Themes" destination="$boarddir">Theme files</require-dir>
 		<require-dir name="Sources/PostLimit" destination="$sourcedir">Source files</require-dir>
-		<hook hook="integrate_autoload" function="postLimitAutoload" file="$sourcedir/PostLimit/autoload.php" />
-		<hook hook="integrate_admin_areas" function="PostLimit\PostLimitAdmin::menu#" />
-		<hook hook="integrate_load_permissions" function="PostLimit\PostLimitAdmin::permissionsHook#" />
-		<hook hook="integrate_create_post" function="PostLimit\PostLimit::checkLimit#" />
-		<hook hook="integrate_after_create_post" function="PostLimit\PostLimit::checkAlert#" />
-		<hook hook="integrate_fetch_alerts" function="PostLimit\PostLimitAlerts::handle#" />
-		<hook hook="integrate_allowed_to_general" function="PostLimit\PostLimit::allowGeneral#" />
-		<hook hook="integrate_post_register" function="PostLimit\PostLimit::createCount#" />
-		<hook hook="integrate_profile_areas" function="PostLimit\PostLimitProfile::setArea#"  />
 		<redirect url="$scripturl?action=admin;area=postlimit" timeout="3000"></redirect>
 	</install>
 
-	<uninstall for="2.1 - 2.1.99">
-		<hook hook="integrate_autoload" function="postLimitAutoload" file="$sourcedir/PostLimit/autoload.php" reverse="true"/>
-		<hook hook="integrate_admin_areas" function="PostLimit\PostLimitAdmin::menu#" reverse="true"/>
-		<hook hook="integrate_load_permissions" function="PostLimit\PostLimitAdmin::permissionsHook#" reverse="true"/>
-		<hook hook="integrate_create_post" function="PostLimit\PostLimit::checkLimit#" reverse="true"/>
-		<hook hook="integrate_after_create_post" function="PostLimit\PostLimit::checkAlert#" reverse="true"/>
-		<hook hook="integrate_fetch_alerts" function="PostLimit\PostLimitAlerts::handle#" reverse="true"/>
-		<hook hook="integrate_allowed_to_general" function="PostLimit\PostLimit::allowGeneral#" reverse="true"/>
-		<hook hook="integrate_post_register" function="PostLimit\PostLimit::createCount#" reverse="true"/>
-		<hook hook="integrate_profile_areas" function="PostLimit\PostLimitProfile::setArea#"  reverse="true"/>
-		<database>install.php</database>
+	<uninstall for="2.0.98 - 2.1.98">
+		<database>remove_postlimit_db.php</database>
 		<code>remove.php</code>
 		<remove-dir name="$sourcedir/PostLimit" />
 		<remove-file name="$languagedir/PostLimit.english.php" />
 		<remove-file name="$themedir/PostLimit.template.php" />
 	</uninstall>
-
 </package-info>

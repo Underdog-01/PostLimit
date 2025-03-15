@@ -6,6 +6,8 @@
 
 global $smcFunc;
 
+db_extend('packages');
+
 // Don't forget to remove the scheduled task...
 $smcFunc['db_query']('', "DELETE FROM {db_prefix}scheduled_tasks WHERE task LIKE 'post_limit'");
 
@@ -18,5 +20,9 @@ remove_integration_function('integrate_allowed_to_general', 'PostLimit\PostLimit
 remove_integration_function('integrate_post_register', 'PostLimit\PostLimit::createCount#');
 remove_integration_function('integrate_profile_areas', 'PostLimit\PostLimitProfile::setArea#');
 remove_integration_function('integrate_pre_load', '$sourcedir/PostLimit/PostLimit.php|PostLimit\PostLimit::loadLanguage#|PostLimit\PostLimit::getClasses#');
+
+if ($smcFunc['db_list_tables'](false, '{db_prefix}post_limit')) {
+	$smcFunc['db_drop_table']('{db_prefix}post_limit');
+}
 
 ?>
