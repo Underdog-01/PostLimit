@@ -25,7 +25,6 @@ class PostLimit
 	{
 		//No DI :(
 		$this->getClasses();
-		$this->removeAllDataInfo();
 		$this->service = $service ?? new PostLimitService();
 	}
 
@@ -95,6 +94,7 @@ class PostLimit
 		global $txt;
 
 		loadLanguage('PostLimit');
+		self::removeAllDataInfo();
 	}
 
 	public static function getClasses(): void
@@ -126,14 +126,12 @@ class PostLimit
 		$actionCheck = stripos($action, 'admin;area=packages;sa=uninstall;package=') !== FALSE && stripos($action, 'postlimit_v') !== FALSE;
 
 		if ((array($action, $area, $sa) == array('admin', 'packages', 'uninstall') && stripos($package, 'postlimit_v') !== FALSE) || $actionCheck) {
-			$lang = new PostLimitUtils();
 			$context['html_headers'] .= '
 			<script>
 				$(document).ready(function(){
-					$("#db_changes_div > ul.normallist li").remove();
-					$("#db_changes_div > ul.normallist").append("<li>' . $lang->text('uninstall_db') . '</li>");
-					$("#db_changes_div > ul.normallist").append("<li>' . $lang->text('uninstall_files') . '</li>");
-					$("#db_changes_div").append(\'<span style="font-weight: bold;">' . $lang->text('uninstall_warning') . '</span>\');
+					$("#db_changes_div > ul.normallist").append("<li>' . $txt[self::NAME . '_uninstall_db'] . '</li>");
+					$("#db_changes_div > ul.normallist").append("<li>' . $txt[self::NAME . '_uninstall_files'] . '</li>");
+					$("#db_changes_div").append(\'<span style="font-weight: bold;">' . $txt[self::NAME . '_uninstall_warning'] . '</span>\');
 				});
 			</script>';
 		}
